@@ -391,7 +391,7 @@ if __name__ == '__main__':
 
 
 class CaseTest(unittest.TestCase):
-    def run(self):
+    def run(self, **kwargs):
         print("\nRun all tests :")
 
         case1 = Case(row=1, col=1, width=1)
