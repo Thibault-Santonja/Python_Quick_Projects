@@ -1,0 +1,7 @@
+# Init colors as global variable (yeah, I can do better but nevermind :D )
+BLACK = (0, 0, 0)
+WHITE = (200, 200, 200)
+RED = (200, 50, 50)
+GREEN = (0, 200, 100)
+BLUE = (0, 100, 200)
+GREY = (100, 100, 100)
