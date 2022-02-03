@@ -37,8 +37,30 @@ class Board:
         self._screen = pygame.display.set_mode((self._window_width, self._window_width))
         self._screen.fill(config.BOARD)
 
+    def _draw_grid(self, food_on_map: bool) -> bool:
+        """
+        Draw the grid on the PyGame screen
+
+        @type food_on_map: bool
+        """
+        grid_size = self._block_size * self._map_size
+
+        food_x = random.randint(0, self._map_size)
+        food_y = random.randint(0, self._map_size)
+
+        for id_x, x in enumerate(range(self._rest, grid_size, self._block_size)):
+            for id_y, y in enumerate(range(self._rest, grid_size, self._block_size)):
+                if not food_on_map and id_x == food_x and id_y == food_y:
+                    rect = pygame.Rect(x, y, self._block_size, self._block_size)
+                    pygame.draw.rect(self._screen, config.FOOD, rect, 1)
+                else:
+                    rect = pygame.Rect(x, y, self._block_size, self._block_size)
+                    pygame.draw.rect(self._screen, config.GRID, rect, 1)
+        return True
+
     def _run(self) -> None:
         self._continue = True
+        food_on_map = False
 
         move_x = 0
         move_y = 0
@@ -47,6 +69,7 @@ class Board:
         snake_position_y = self._rest + self._map_size//2 * self._block_size
 
         while self._continue:
+            food_on_map = self._draw_grid(food_on_map)
             for event in pygame.event.get():
 
                 # Quit the UI
