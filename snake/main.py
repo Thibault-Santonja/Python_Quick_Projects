@@ -1,5 +1,5 @@
-from snake import board
+from snake import Board
 
 
 if __name__ == "__main__":
-    board = board.Board()
+    board = Board.Board()

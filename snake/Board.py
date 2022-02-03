@@ -4,6 +4,8 @@ import pygame
 import config
 import random
 
+from snake import Point
+
 
 class Board:
     _screen = 800
@@ -12,8 +14,8 @@ class Board:
     _map_size = 30
     _step_duration = .5
     _rest = 0
-    _snake_position_x = 0
-    _snake_position_y = 0
+    _snake = None
+    _food = None
 
     def __init__(self, window_width: int = 800, map_size: int = 30) -> None:
         """
@@ -26,8 +28,10 @@ class Board:
         self._map_size = map_size
         self._block_size = self._window_width//map_size
         self._rest = (self._window_width % self._map_size) // 2
-        self._snake_position_x = self._rest + self._map_size//2 * self._block_size
-        self._snake_position_y = self._rest + self._map_size//2 * self._block_size
+        self._snake = Point.Point(
+            self._rest + self._map_size//2 * self._block_size,
+            self._rest + self._map_size//2 * self._block_size,
+            color=config.SNAKE)
 
         # Initialize the board and run the game
         self._init_screen()
@@ -49,12 +53,14 @@ class Board:
         """
         grid_size = self._block_size * self._map_size
 
-        food_x = random.randint(0, self._map_size)
-        food_y = random.randint(0, self._map_size)
+        self._food = Point.Point(
+            random.randint(0, self._map_size),
+            random.randint(0, self._map_size),
+            config.FOOD)
 
         for id_x, x in enumerate(range(self._rest, grid_size, self._block_size)):
             for id_y, y in enumerate(range(self._rest, grid_size, self._block_size)):
-                if not food_on_map and id_x == food_x and id_y == food_y:
+                if not food_on_map and id_x == self._food.x and id_y == self._food.y:
                     rect = pygame.Rect(x, y, self._block_size, self._block_size)
                     pygame.draw.rect(self._screen, config.FOOD, rect, 1)
                 else:
@@ -69,13 +75,10 @@ class Board:
         @param move_y:
         @return:
         """
-        self._snake_position_x += move_x
-        self._snake_position_y -= move_y
+        self._snake.move(move_x, -move_y)
 
-        if self._snake_position_x < self._block_size or self._snake_position_x > self._block_size * self._map_size or \
-                self._snake_position_y < self._block_size or self._snake_position_y > self._block_size * self._map_size:
-            self._snake_position_x -= move_x
-            self._snake_position_y += move_y
+        if self._snake.x < self._rest or self._snake.x > self._block_size * self._map_size or \
+                self._snake.y < self._rest or self._snake.y > self._block_size * self._map_size:
             self._continue = False
 
     def _run(self) -> None:
@@ -127,7 +130,7 @@ class Board:
 
             self._calculate_position(move_x, move_y)
             pygame.draw.rect(self._screen, config.SNAKE,
-                             [self._snake_position_x, self._snake_position_y, self._block_size, self._block_size])
+                             [self._snake.x, self._snake.y, self._block_size, self._block_size])
 
             pygame.display.update()
             time.sleep(self._step_duration)
