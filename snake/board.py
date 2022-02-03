@@ -12,6 +12,8 @@ class Board:
     _map_size = 30
     _step_duration = .5
     _rest = 0
+    _snake_position_x = 0
+    _snake_position_y = 0
 
     def __init__(self, window_width: int = 800, map_size: int = 30) -> None:
         """
@@ -24,6 +26,8 @@ class Board:
         self._map_size = map_size
         self._block_size = self._window_width//map_size
         self._rest = (self._window_width % self._map_size) // 2
+        self._snake_position_x = self._rest + self._map_size//2 * self._block_size
+        self._snake_position_y = self._rest + self._map_size//2 * self._block_size
 
         # Initialize the board and run the game
         self._init_screen()
@@ -58,15 +62,32 @@ class Board:
                     pygame.draw.rect(self._screen, config.GRID, rect, 1)
         return True
 
+    def _calculate_position(self, move_x: int, move_y: int):
+        """
+
+        @param move_x:
+        @param move_y:
+        @return:
+        """
+        self._snake_position_x += move_x
+        self._snake_position_y -= move_y
+
+        if self._snake_position_x < self._block_size or self._snake_position_x > self._block_size * self._map_size or \
+                self._snake_position_y < self._block_size or self._snake_position_y > self._block_size * self._map_size:
+            self._snake_position_x -= move_x
+            self._snake_position_y += move_y
+            self._continue = False
+
     def _run(self) -> None:
+        """
+
+        @return:
+        """
         self._continue = True
         food_on_map = False
 
         move_x = 0
         move_y = 0
-
-        snake_position_x = self._rest + self._map_size//2 * self._block_size
-        snake_position_y = self._rest + self._map_size//2 * self._block_size
 
         while self._continue:
             food_on_map = self._draw_grid(food_on_map)
@@ -78,27 +99,35 @@ class Board:
 
                 # Get a keyboard action
                 if event.type == pygame.KEYDOWN:
-                    # Move
                     match event.key:
+                        # Move
                         case pygame.K_LEFT:
+                            if move_x > 0:
+                                continue
                             move_x = -self._block_size
                             move_y = 0
                         case pygame.K_RIGHT:
+                            if move_x < 0:
+                                continue
                             move_x = self._block_size
                             move_y = 0
                         case pygame.K_UP:
+                            if move_y < 0:
+                                continue
                             move_x = 0
                             move_y = self._block_size
                         case pygame.K_DOWN:
+                            if move_y > 0:
+                                continue
                             move_x = 0
                             move_y = -self._block_size
-                        case pygame.K_ESCAPE: # Quit the UI
+                        # Quit the UI
+                        case pygame.K_ESCAPE:
                             self._continue = False
 
-            snake_position_x += move_x
-            snake_position_y -= move_y
+            self._calculate_position(move_x, move_y)
             pygame.draw.rect(self._screen, config.SNAKE,
-                             [snake_position_x, snake_position_y, self._block_size, self._block_size])
+                             [self._snake_position_x, self._snake_position_y, self._block_size, self._block_size])
 
             pygame.display.update()
             time.sleep(self._step_duration)
