@@ -5,6 +5,7 @@ import config
 import random
 
 from snake import Point
+from snake import Snake
 
 
 class Board:
@@ -12,7 +13,7 @@ class Board:
     _continue = False
     _block_size = 20
     _map_size = 30
-    _step_duration = .5
+    _step_duration = .1
     _rest = 0
     _snake = None
     _food = None
@@ -45,28 +46,16 @@ class Board:
         self._screen = pygame.display.set_mode((self._window_width, self._window_width))
         self._screen.fill(config.BOARD)
 
-    def _draw_grid(self, food_on_map: bool) -> bool:
+    def _draw_grid(self):
         """
         Draw the grid on the PyGame screen
-
-        @type food_on_map: bool
         """
         grid_size = self._block_size * self._map_size
 
-        self._food = Point.Point(
-            random.randint(0, self._map_size),
-            random.randint(0, self._map_size),
-            config.FOOD)
-
         for id_x, x in enumerate(range(self._rest, grid_size, self._block_size)):
             for id_y, y in enumerate(range(self._rest, grid_size, self._block_size)):
-                if not food_on_map and id_x == self._food.x and id_y == self._food.y:
-                    rect = pygame.Rect(x, y, self._block_size, self._block_size)
-                    pygame.draw.rect(self._screen, config.FOOD, rect, 1)
-                else:
-                    rect = pygame.Rect(x, y, self._block_size, self._block_size)
-                    pygame.draw.rect(self._screen, config.GRID, rect, 1)
-        return True
+                rect = pygame.Rect(x, y, self._block_size, self._block_size)
+                pygame.draw.rect(self._screen, config.GRID, rect, 1)
 
     def _calculate_position(self, move_x: int, move_y: int):
         """
@@ -87,13 +76,17 @@ class Board:
         @return:
         """
         self._continue = True
-        food_on_map = False
+
+        self._food = Point.Point(
+            random.randint(0, self._map_size),
+            random.randint(0, self._map_size),
+            config.FOOD)
 
         move_x = 0
         move_y = 0
 
         while self._continue:
-            food_on_map = self._draw_grid(food_on_map)
+            self._draw_grid()
             for event in pygame.event.get():
 
                 # Quit the UI
@@ -131,6 +124,7 @@ class Board:
             self._calculate_position(move_x, move_y)
             pygame.draw.rect(self._screen, config.SNAKE,
                              [self._snake.x, self._snake.y, self._block_size, self._block_size])
+
 
             pygame.display.update()
             time.sleep(self._step_duration)
