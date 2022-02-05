@@ -6,15 +6,13 @@ from snake import Point
 class Snake:
     _head = None
     _body = []
-    _size = 1
 
     def __init__(self, head: Point.Point, size=3):
         """
 
         @type head: Point.Point
         """
-        self._size = size
-        for i in range(self._size):
+        for i in range(size):
             self._body.append(Point.Point(head.x, head.y, head.color))
         self._head = head
 

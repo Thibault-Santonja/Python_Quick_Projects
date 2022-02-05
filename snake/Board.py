@@ -66,13 +66,28 @@ class Board:
         @param move_y:
         @return:
         """
-        tail = self._snake.move(move_x, -move_y)
+
+        tail = None
+
+        if self._food == self._snake.head:
+            self._snake.eat(move_x, -move_y)
+            self._create_food()
+        else:
+            tail = self._snake.move(move_x, -move_y)
 
         if self._snake.head.x < self._rest or self._snake.head.x > self._block_size * self._map_size or \
                 self._snake.head.y < self._rest or self._snake.head.y > self._block_size * self._map_size:
             self._continue = False
 
         return tail
+
+    def _create_food(self):
+        self._food = Point.Point(
+            self._rest + random.randint(0, self._map_size-1) * self._block_size,
+            self._rest + random.randint(0, self._map_size-1) * self._block_size,
+            config.FOOD)
+        pygame.draw.rect(self._screen, self._food.color,
+                         [self._food.x, self._food.y, self._block_size, self._block_size])
 
     def _update_snake_position(self, move_x: int, move_y: int):
         """
@@ -88,9 +103,10 @@ class Board:
         pygame.draw.rect(self._screen, self._snake.head.color,
                          [self._snake.head.x, self._snake.head.y, self._block_size, self._block_size])
 
-        # Delete old tail
-        pygame.draw.rect(self._screen, config.BOARD,
-                         [old_tail_position.x, old_tail_position.y, self._block_size, self._block_size])
+        if old_tail_position:
+            # Delete old tail
+            pygame.draw.rect(self._screen, config.BOARD,
+                             [old_tail_position.x, old_tail_position.y, self._block_size, self._block_size])
 
     def _keyboard_action(self, event, move_x, move_y):
         """
@@ -134,11 +150,7 @@ class Board:
         @return:
         """
         self._draw_grid()
-
-        self._food = Point.Point(
-            random.randint(0, self._map_size),
-            random.randint(0, self._map_size),
-            config.FOOD)
+        self._create_food()
 
         move_x = 0
         move_y = 0
