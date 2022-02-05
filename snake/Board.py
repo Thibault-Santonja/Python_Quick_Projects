@@ -66,18 +66,22 @@ class Board:
         @param move_y:
         @return:
         """
-
         tail = None
 
         if self._food == self._snake.head:
-            self._snake.eat(move_x, -move_y)
+            if not self._snake.eat(move_x, -move_y):
+                self._continue = False
             self._create_food()
         else:
             tail = self._snake.move(move_x, -move_y)
 
+            if not tail:
+                self._continue = False
+
         if self._snake.head.x < self._rest or self._snake.head.x > self._block_size * self._map_size or \
                 self._snake.head.y < self._rest or self._snake.head.y > self._block_size * self._map_size:
             self._continue = False
+
 
         return tail
 
@@ -116,6 +120,8 @@ class Board:
         @param move_y:
         @return:
         """
+        move_entry = False
+
         # Quit the UI
         if event.type == pygame.QUIT:
             self._continue = False
@@ -127,22 +133,26 @@ class Board:
                     if move_x >= 0:
                         move_x = -self._block_size
                         move_y = 0
+                        move_entry = True
                 case pygame.K_RIGHT:
                     if move_x >= 0:
                         move_x = self._block_size
                         move_y = 0
+                        move_entry = True
                 case pygame.K_UP:
                     if move_y >= 0:
                         move_x = 0
                         move_y = self._block_size
+                        move_entry = True
                 case pygame.K_DOWN:
                     if move_y >= 0:
                         move_x = 0
                         move_y = -self._block_size
+                        move_entry = True
                 # Quit the UI
                 case pygame.K_ESCAPE:
                     self._continue = False
-        return move_x, move_y
+        return move_x, move_y, move_entry
 
     def _run(self) -> None:
         """
@@ -157,15 +167,17 @@ class Board:
 
         while not self._continue:
             for event in pygame.event.get():
-                move_x, move_y = self._keyboard_action(event, move_x, move_y)
+                move_x, move_y, _ = self._keyboard_action(event, move_x, move_y)
                 if move_y + move_x != 0:
                     self._continue = True
 
         while self._continue:
+            move_entry = False
             self._draw_grid()
             for event in pygame.event.get():
                 # Get a keyboard action
-                move_x, move_y = self._keyboard_action(event, move_x, move_y)
+                if not move_entry:
+                    move_x, move_y, move_entry = self._keyboard_action(event, move_x, move_y)
 
             self._update_snake_position(move_x, move_y)
 

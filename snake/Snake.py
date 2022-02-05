@@ -1,4 +1,5 @@
 import copy
+from typing import Optional
 
 from snake import Point
 
@@ -24,7 +25,7 @@ class Snake:
         """
         return self._head
 
-    def move(self, delta_x: int, delta_y: int) -> Point.Point:
+    def move(self, delta_x: int, delta_y: int) -> Optional[Point.Point]:
         """
 
         @param delta_y:
@@ -32,10 +33,11 @@ class Snake:
         @type delta_y: Point.Point
         @type delta_x: Point.Point
         """
-        self._update_position(delta_x, delta_y)
+        if not self._update_position(delta_x, delta_y):
+            return None
         return self._body.pop(0)
 
-    def eat(self, delta_x: int, delta_y: int) -> None:
+    def eat(self, delta_x: int, delta_y: int) -> bool:
         """
 
         @param delta_y:
@@ -43,9 +45,11 @@ class Snake:
         @type delta_y: Point.Point
         @type delta_x: Point.Point
         """
-        self._update_position(delta_x, delta_y)
+        if not self._update_position(delta_x, delta_y):
+            return False
+        return True
 
-    def _update_position(self, delta_x: int, delta_y: int):
+    def _update_position(self, delta_x: int, delta_y: int) -> bool:
         """
 
         @param delta_y:
@@ -56,4 +60,18 @@ class Snake:
         self._head.x += delta_x
         self._head.y += delta_y
 
+        if self._controll_self_eating():
+            return False
+
         self._body.append(copy.copy(self.head))
+        return True
+
+    def _controll_self_eating(self) -> bool:
+        """
+
+        @return:
+        """
+        for element in self._body:
+            if element == self._head:
+                return True
+        return False
