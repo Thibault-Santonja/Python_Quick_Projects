@@ -57,26 +57,83 @@ class Board:
             for id_y, y in enumerate(range(self._rest, grid_size, self._block_size)):
                 rect = pygame.Rect(x, y, self._block_size, self._block_size)
                 pygame.draw.rect(self._screen, config.GRID, rect, 1)
+        pygame.display.update()
 
-    def _calculate_position(self, move_x: int, move_y: int):
+    def _calculate_position(self, move_x: int, move_y: int) -> Point.Point:
         """
 
         @param move_x:
         @param move_y:
         @return:
         """
-        self._snake.move(move_x, -move_y)
+        tail = self._snake.move(move_x, -move_y)
 
         if self._snake.head.x < self._rest or self._snake.head.x > self._block_size * self._map_size or \
                 self._snake.head.y < self._rest or self._snake.head.y > self._block_size * self._map_size:
             self._continue = False
+
+        return tail
+
+    def _update_snake_position(self, move_x: int, move_y: int):
+        """
+
+        @param move_x:
+        @param move_y:
+        @return:
+        """
+        # Calculate new position
+        old_tail_position = self._calculate_position(move_x, move_y)
+
+        # Update head bloc
+        pygame.draw.rect(self._screen, self._snake.head.color,
+                         [self._snake.head.x, self._snake.head.y, self._block_size, self._block_size])
+
+        # Delete old tail
+        pygame.draw.rect(self._screen, config.BOARD,
+                         [old_tail_position.x, old_tail_position.y, self._block_size, self._block_size])
+
+    def _keyboard_action(self, event, move_x, move_y):
+        """
+
+        @param event:
+        @param move_x:
+        @param move_y:
+        @return:
+        """
+        # Quit the UI
+        if event.type == pygame.QUIT:
+            self._continue = False
+
+        if event.type == pygame.KEYDOWN:
+            match event.key:
+                # Move
+                case pygame.K_LEFT:
+                    if move_x >= 0:
+                        move_x = -self._block_size
+                        move_y = 0
+                case pygame.K_RIGHT:
+                    if move_x >= 0:
+                        move_x = self._block_size
+                        move_y = 0
+                case pygame.K_UP:
+                    if move_y >= 0:
+                        move_x = 0
+                        move_y = self._block_size
+                case pygame.K_DOWN:
+                    if move_y >= 0:
+                        move_x = 0
+                        move_y = -self._block_size
+                # Quit the UI
+                case pygame.K_ESCAPE:
+                    self._continue = False
+        return move_x, move_y
 
     def _run(self) -> None:
         """
 
         @return:
         """
-        self._continue = True
+        self._draw_grid()
 
         self._food = Point.Point(
             random.randint(0, self._map_size),
@@ -86,47 +143,21 @@ class Board:
         move_x = 0
         move_y = 0
 
+        while not self._continue:
+            for event in pygame.event.get():
+                move_x, move_y = self._keyboard_action(event, move_x, move_y)
+                if move_y + move_x != 0:
+                    self._continue = True
+
         while self._continue:
             self._draw_grid()
             for event in pygame.event.get():
-
-                # Quit the UI
-                if event.type == pygame.QUIT:
-                    self._continue = False
-
                 # Get a keyboard action
-                if event.type == pygame.KEYDOWN:
-                    match event.key:
-                        # Move
-                        case pygame.K_LEFT:
-                            if move_x > 0:
-                                continue
-                            move_x = -self._block_size
-                            move_y = 0
-                        case pygame.K_RIGHT:
-                            if move_x < 0:
-                                continue
-                            move_x = self._block_size
-                            move_y = 0
-                        case pygame.K_UP:
-                            if move_y < 0:
-                                continue
-                            move_x = 0
-                            move_y = self._block_size
-                        case pygame.K_DOWN:
-                            if move_y > 0:
-                                continue
-                            move_x = 0
-                            move_y = -self._block_size
-                        # Quit the UI
-                        case pygame.K_ESCAPE:
-                            self._continue = False
+                move_x, move_y = self._keyboard_action(event, move_x, move_y)
 
-            self._calculate_position(move_x, move_y)
-            pygame.draw.rect(self._screen, config.SNAKE,
-                             [self._snake.head.x, self._snake.head.y, self._block_size, self._block_size])
+            self._update_snake_position(move_x, move_y)
 
-            pygame.display.update()
+            # pygame.display.update()
             time.sleep(self._step_duration)
 
         pygame.quit()
