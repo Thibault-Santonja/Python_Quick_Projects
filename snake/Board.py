@@ -17,6 +17,8 @@ class Board:
     _rest = 0
     _snake = None
     _food = None
+    _score_font = None
+    _finished = False
 
     def __init__(self, window_width: int = 800, map_size: int = 30) -> None:
         """
@@ -35,9 +37,13 @@ class Board:
             color=config.SNAKE)
         self._snake = Snake.Snake(snake_head)
 
-        # Initialize the board and run the game
-        self._init_screen()
-        self._run()
+    @property
+    def is_finished(self):
+        """
+
+        @return:
+        """
+        return self._finished
 
     def _init_screen(self) -> None:
         """
@@ -45,7 +51,9 @@ class Board:
         """
         pygame.init()
         self._screen = pygame.display.set_mode((self._window_width, self._window_width))
+        pygame.display.set_caption('Snake Game')
         self._screen.fill(config.BOARD)
+        self._score_font = pygame.font.SysFont('dejavusans', 32)
 
     def _draw_grid(self):
         """
@@ -86,6 +94,10 @@ class Board:
         return tail
 
     def _create_food(self):
+        """
+
+        @return:
+        """
         self._food = Point.Point(
             self._rest + random.randint(0, self._map_size-1) * self._block_size,
             self._rest + random.randint(0, self._map_size-1) * self._block_size,
@@ -124,7 +136,7 @@ class Board:
 
         # Quit the UI
         if event.type == pygame.QUIT:
-            self._continue = False
+            pygame.quit()
 
         if event.type == pygame.KEYDOWN:
             match event.key:
@@ -151,33 +163,9 @@ class Board:
                         move_entry = True
                 # Quit the UI
                 case pygame.K_ESCAPE:
-                    self._continue = False
+                    pygame.quit()
+
         return move_x, move_y, move_entry
-
-    def _run(self) -> None:
-        """
-
-        @return:
-        """
-        self._draw_grid()
-        self._create_food()
-
-        move_x, move_y = self._start_game(0, 0)
-
-        while self._continue:
-            move_entry = False
-            self._draw_grid()
-            for event in pygame.event.get():
-                # Get a keyboard action
-                if not move_entry:
-                    move_x, move_y, move_entry = self._keyboard_action(event, move_x, move_y)
-
-            self._update_snake_position(move_x, move_y)
-
-            # pygame.display.update()
-            time.sleep(self._step_duration)
-
-        pygame.quit()
 
     def _start_game(self, move_x, move_y):
         """
@@ -193,3 +181,37 @@ class Board:
                     self._continue = True
 
         return move_x, move_y
+
+    def _score(self, score):
+        """
+
+        @param score:
+        @return:
+        """
+        self._screen.blit(self._score_font.render(f"Your Score: {score-1}", True, config.BOARD), [0, 0])
+        self._screen.blit(self._score_font.render(f"Your Score: {score}", True, config.SNAKE), [0, 0])
+
+    def run(self) -> None:
+        """
+
+        @return:
+        """
+        self._init_screen()
+        self._draw_grid()
+
+        self._create_food()
+        move_x, move_y = self._start_game(0, 0)
+
+        while self._continue:
+            move_entry = False
+            self._draw_grid()
+            for event in pygame.event.get():
+                # Get a keyboard action
+                if not move_entry:
+                    move_x, move_y, move_entry = self._keyboard_action(event, move_x, move_y)
+
+            self._update_snake_position(move_x, move_y)
+            self._score(self._snake.lenght-3)
+
+            # pygame.display.update()
+            time.sleep(self._step_duration)

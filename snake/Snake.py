@@ -25,6 +25,14 @@ class Snake:
         """
         return self._head
 
+    @property
+    def lenght(self) -> int:
+        """
+
+        @return:
+        """
+        return len(self._body)
+
     def move(self, delta_x: int, delta_y: int) -> Optional[Point.Point]:
         """
 
