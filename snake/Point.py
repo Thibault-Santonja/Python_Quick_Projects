@@ -8,7 +8,3 @@ class Point:
         self.y = y
         self.color = color
 
-    def move(self, delta_x: int, delta_y: int):
-        self.x += delta_x
-        self.y += delta_y
-

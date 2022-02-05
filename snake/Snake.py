@@ -3,8 +3,8 @@ import queue
 
 
 class Snake:
-    head = None
-    body = queue.Queue()
+    _head = None
+    _body = queue.Queue()
     length = 1
 
     def __init__(self, head: Point.Point):
@@ -12,22 +12,47 @@ class Snake:
 
         @type head: Point.Point
         """
-        self.body.put(head)
-        self.head = head
+        self._body.put(head)
+        self._head = head
 
-    def update_position(self, head: Point.Point) -> Point.Point:
+    @property
+    def head(self) -> Point.Point:
         """
 
-        @type head: Point.Point
+        @return:
         """
-        self.head = head
-        self.body.put(head)
-        return self.body.get()
+        return self._head
 
-    def upgrade_size(self, head: Point.Point) -> None:
+    def move(self, delta_x: int, delta_y: int) -> Point.Point:
         """
 
-        @type head: Point.Point
+        @param delta_y:
+        @param delta_x:
+        @type delta_y: Point.Point
+        @type delta_x: Point.Point
         """
-        self.head = head
-        self.body.put(head)
+        self._update_position(delta_x, delta_y)
+        return self._body.get()
+
+    def eat(self, delta_x: int, delta_y: int) -> None:
+        """
+
+        @param delta_y:
+        @param delta_x:
+        @type delta_y: Point.Point
+        @type delta_x: Point.Point
+        """
+        self._update_position(delta_x, delta_y)
+
+    def _update_position(self, delta_x: int, delta_y: int):
+        """
+
+        @param delta_y:
+        @param delta_x:
+        @type delta_y: Point.Point
+        @type delta_x: Point.Point
+        """
+        self._head.x += delta_x
+        self._head.y += delta_y
+
+        self._body.put(self.head)
