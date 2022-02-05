@@ -71,7 +71,7 @@ class Snake:
 
         @return:
         """
-        for element in self._body:
+        for element in self._body[:-1]:
             if element == self._head:
                 return True
         return False

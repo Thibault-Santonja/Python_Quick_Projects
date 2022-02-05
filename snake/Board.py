@@ -162,14 +162,7 @@ class Board:
         self._draw_grid()
         self._create_food()
 
-        move_x = 0
-        move_y = 0
-
-        while not self._continue:
-            for event in pygame.event.get():
-                move_x, move_y, _ = self._keyboard_action(event, move_x, move_y)
-                if move_y + move_x != 0:
-                    self._continue = True
+        move_x, move_y = self._start_game(0, 0)
 
         while self._continue:
             move_entry = False
@@ -185,3 +178,18 @@ class Board:
             time.sleep(self._step_duration)
 
         pygame.quit()
+
+    def _start_game(self, move_x, move_y):
+        """
+
+        @param move_x:
+        @param move_y:
+        @return:
+        """
+        while not self._continue:
+            for event in pygame.event.get():
+                move_x, move_y, _ = self._keyboard_action(event, move_x, move_y)
+                if move_y + move_x != 0:
+                    self._continue = True
+
+        return move_x, move_y
