@@ -8,12 +8,12 @@ class Snake:
     _head = None
     _body = []
 
-    def __init__(self, head: Point.Point, size=3):
+    def __init__(self, head: Point.Point, initial_length=3):
         """
 
         @type head: Point.Point
         """
-        for i in range(size):
+        for i in range(initial_length):
             self._body.append(Point.Point(head.x, head.y, head.color))
         self._head = head
 

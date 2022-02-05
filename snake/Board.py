@@ -19,8 +19,9 @@ class Board:
     _food = None
     _score_font = None
     _finished = False
+    _initial_length = 3
 
-    def __init__(self, window_width: int = 800, map_size: int = 30) -> None:
+    def __init__(self, window_width: int = 800, map_size: int = 30, initial_length=3) -> None:
         """
 
         @type map_size: int
@@ -35,7 +36,8 @@ class Board:
             self._rest + self._map_size//2 * self._block_size,
             self._rest + self._map_size//2 * self._block_size,
             color=config.SNAKE)
-        self._snake = Snake.Snake(snake_head)
+        self.initial_length = initial_length
+        self._snake = Snake.Snake(snake_head, self.initial_length)
 
     @property
     def is_finished(self):
@@ -191,6 +193,16 @@ class Board:
         self._screen.blit(self._score_font.render(f"Your Score: {score-1}", True, config.BOARD), [0, 0])
         self._screen.blit(self._score_font.render(f"Your Score: {score}", True, config.SNAKE), [0, 0])
 
+    def _game_over(self, score):
+        """
+
+        @param score:
+        @return:
+        """
+        self._screen.blit(self._score_font.render("Game Over !", True, config.SNAKE),
+                          [self._map_size * self._block_size//2, self._map_size * self._block_size//2])
+        self._draw_grid()
+
     def run(self) -> None:
         """
 
@@ -211,7 +223,10 @@ class Board:
                     move_x, move_y, move_entry = self._keyboard_action(event, move_x, move_y)
 
             self._update_snake_position(move_x, move_y)
-            self._score(self._snake.lenght-3)
+            self._score(self._snake.lenght - self.initial_length)
 
             # pygame.display.update()
             time.sleep(self._step_duration)
+
+        self._game_over(self._snake.lenght - self.initial_length)
+        time.sleep(3)
