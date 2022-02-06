@@ -10,3 +10,6 @@ __pycache__/
 
 # Python specific
 venv/
+
+# Project specific
+draft_project/
