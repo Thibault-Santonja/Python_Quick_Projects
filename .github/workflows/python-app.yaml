@@ -12,7 +12,10 @@ on:
 jobs:
   build:
 
-    runs-on: python:3.10-slim-buster
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-18.04, ubuntu-20.04]
 
     steps:
     - uses: actions/checkout@v2
