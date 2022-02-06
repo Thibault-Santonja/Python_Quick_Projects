@@ -68,13 +68,13 @@ class Snake:
         self._head.x += delta_x
         self._head.y += delta_y
 
-        if self._controll_self_eating():
+        if self._control_self_eating():
             return False
 
         self._body.append(copy.copy(self.head))
         return True
 
-    def _controll_self_eating(self) -> bool:
+    def _control_self_eating(self) -> bool:
         """
 
         @return:
