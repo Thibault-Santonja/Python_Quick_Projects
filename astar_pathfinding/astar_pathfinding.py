@@ -9,7 +9,7 @@ import pygame
 from astar_pathfinding import Grid
 
 
-if __name__ == '__main__':
+def launch_astar():
     window_width = 800
     nb_rows = 50
 
@@ -21,5 +21,3 @@ if __name__ == '__main__':
     grid = Grid.Grid(nb_rows, window, window_width)
     grid.run()
 
-# For the test :
-# CaseTest().run()

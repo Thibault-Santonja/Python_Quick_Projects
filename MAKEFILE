@@ -20,7 +20,7 @@ test: venv
 astar_pathfinding: venv test
 	( \
 		source venv/bin/activate; \
-		python3.10 astar_pathfinding/Astar_pathfinding.py; \
+		python3.10 main.py astar; \
 	)
 
 ## Snake game

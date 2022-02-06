@@ -1,7 +1,7 @@
 from unittest import TestCase
 import unittest
 
-import Case
+from astar_pathfinding import Case
 
 
 class TestGrid(TestCase):
