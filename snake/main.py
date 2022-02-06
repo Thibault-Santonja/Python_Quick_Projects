@@ -2,6 +2,13 @@
 from snake import Board
 
 
-if __name__ == "__main__":
+def launch_game() -> None:
+    """
+
+    """
     board = Board.Board()
     board.run()
+
+
+if __name__ == "__main__":
+    launch_game()

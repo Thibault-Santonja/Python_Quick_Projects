@@ -1,10 +1,10 @@
 import time
 
 import pygame
-import config
 import random
 
 from snake import Point
+from snake import config
 from snake import Snake
 
 
@@ -193,7 +193,7 @@ class Board:
         self._screen.blit(self._score_font.render(f"Your Score: {score-1}", True, config.BOARD), [0, 0])
         self._screen.blit(self._score_font.render(f"Your Score: {score}", True, config.SNAKE), [0, 0])
 
-    def _game_over(self, score):
+    def _game_over(self):
         """
 
         @param score:
@@ -202,6 +202,20 @@ class Board:
         self._screen.blit(self._score_font.render("Game Over !", True, config.SNAKE),
                           [self._map_size * self._block_size//2, self._map_size * self._block_size//2])
         self._draw_grid()
+        stop = False
+        while not stop:
+            for event in pygame.event.get():
+                # Quit the UI
+                match event.type:
+                    case pygame.QUIT:
+                        pygame.quit()
+                        stop = True
+                    case pygame.KEYDOWN:
+                        if pygame.K_ESCAPE:
+                            pygame.quit()
+                            stop = True
+
+
 
     def run(self) -> None:
         """
@@ -228,5 +242,4 @@ class Board:
             # pygame.display.update()
             time.sleep(self._step_duration)
 
-        self._game_over(self._snake.lenght - self.initial_length)
-        time.sleep(3)
+        self._game_over()
