@@ -10,6 +10,7 @@ class TestSnake(TestCase):
     """
 
     """
+
     def test_head(self) -> None:
         """
 
@@ -55,8 +56,8 @@ class TestSnake(TestCase):
 
         @return:
         """
-        snake = Snake(Point(0, 0), 1)
-        snake.eat(1, 1)
+        snake = Snake(Point(1, 1), 1)
+        snake.eat(1, 0)
         self.assertEqual(snake.length, 2)
         self.assertEqual(snake._update_position(0, 0), True)
         self.assertEqual(snake.length, 3)
@@ -70,6 +71,17 @@ class TestSnake(TestCase):
         """
         snake = Snake(Point(0, 0), 1)
         snake.eat(1, 1)
-        self.assertEqual(snake._control_self_eating(), False)
+        self.assertEqual(snake._is_self_eating(), False)
         snake.eat(0, 0)
-        self.assertEqual(snake._control_self_eating(), True)
+        self.assertEqual(snake._is_self_eating(), True)
+
+    def test_control_overlap(self):
+        """
+
+        @return:
+        """
+        snake = Snake(Point(0, 0), 1)
+        point = Point(0, 0)
+        self.assertEqual(snake.is_overlap(point), True)
+        snake.move(1, 1)
+        self.assertEqual(snake.is_overlap(point), False)
