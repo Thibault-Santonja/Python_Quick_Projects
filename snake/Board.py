@@ -111,12 +111,16 @@ class Board:
 
         @return:
         """
-        self._food = Point.Point(
-            self._rest + random.randint(0, self._map_size-1) * self._block_size,
-            self._rest + random.randint(0, self._map_size-1) * self._block_size,
-            config.FOOD)
-        pygame.draw.rect(self._screen, self._food.color,
-                         [self._food.x, self._food.y, self._block_size, self._block_size])
+        food_created = False
+        while not food_created:
+            self._food = Point.Point(
+                self._rest + random.randint(0, self._map_size-1) * self._block_size,
+                self._rest + random.randint(0, self._map_size-1) * self._block_size,
+                config.FOOD)
+            if not self._snake.is_overlap(self._food):
+                food_created = True
+                pygame.draw.rect(self._screen, self._food.color,
+                                 [self._food.x, self._food.y, self._block_size, self._block_size])
 
     def _update_snake_position(self, move_x: int, move_y: int) -> None:
         """
@@ -151,6 +155,7 @@ class Board:
         @type move_y: int
         @return:
         """
+        # fixme : to log on DEBUG mode `print(event)`
         move_entry = False
 
         # Quit the UI
@@ -158,8 +163,8 @@ class Board:
             pygame.quit()
 
         if event.type == pygame.KEYDOWN:
-            match event.key:
-                # Move
+            match event.key:   # noqa
+                # Movement
                 case pygame.K_LEFT:
                     if move_x >= 0:
                         move_x = -self._block_size
