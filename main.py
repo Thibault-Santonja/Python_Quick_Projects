@@ -2,16 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import config
+
+
+def _handle_unknown(argument: str) -> None:
+    print(f"Unknown argument : {argument}")
 
 
 if __name__ == "__main__":
     for arg in sys.argv[1:]:
-        match arg:  # noqa
-            case "snake":
-                from snake import main as snake
-                snake.launch_game()
-            case "astar":
-                from astar_pathfinding import astar_pathfinding
-                astar_pathfinding.launch_astar()
-            case _:
-                print(f"Unrecognized argument : {arg}")
+        project_handler = config.ARGUMENT_MAPPING.get(arg, _handle_unknown(arg))
+        project_handler()
