@@ -11,7 +11,7 @@ class Snake:
     _head = None
     _body = None
 
-    def __init__(self, head: Point.Point, initial_length=3):
+    def __init__(self, head: Point.Point, initial_length=3) -> None:
         """
 
         @type head: Point.Point
@@ -24,14 +24,16 @@ class Snake:
     @property
     def head(self) -> Point.Point:
         """
+        Getter for head property
 
         @return:
         """
         return self._head
 
     @property
-    def lenght(self) -> int:
+    def length(self) -> int:
         """
+        Getter for snake length
 
         @return:
         """
@@ -39,6 +41,7 @@ class Snake:
 
     def move(self, delta_x: int, delta_y: int) -> Optional[Point.Point]:
         """
+        Move the snake
 
         @param delta_y:
         @param delta_x:
@@ -51,6 +54,7 @@ class Snake:
 
     def eat(self, delta_x: int, delta_y: int) -> bool:
         """
+        Move the snake and eat
 
         @param delta_y:
         @param delta_x:
@@ -63,6 +67,7 @@ class Snake:
 
     def _update_position(self, delta_x: int, delta_y: int) -> bool:
         """
+        Change snake position
 
         @param delta_y:
         @param delta_x:
@@ -80,6 +85,7 @@ class Snake:
 
     def _control_self_eating(self) -> bool:
         """
+        Check if the snake eat itself
 
         @return:
         """
