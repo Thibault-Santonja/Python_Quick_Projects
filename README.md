@@ -11,3 +11,4 @@ up on algorithm (A* pathfinding, Voronoi...), on software development (design pa
 
 ---
 *Thibault Santonja*<br/>
+*2021*
