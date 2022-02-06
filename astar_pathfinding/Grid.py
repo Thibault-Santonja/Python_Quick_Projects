@@ -28,7 +28,7 @@ class Grid(object):
         """Returns the length of grid rows (or column as long as it's a square grid)"""
         return self.__nb_rows
 
-    def get_grid(self) -> object:
+    def get_grid(self):
         """Returns the grid"""
         return self.__grid
 
@@ -61,7 +61,7 @@ class Grid(object):
         y, x = position
         return y // self.__size, x // self.__size
 
-    def __get_case(self, position: tuple) -> object:
+    def __get_case(self, position: tuple):
         """Returns a specific case"""
         row, col = position
         return self.__grid[row][col]
