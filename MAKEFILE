@@ -1,0 +1,21 @@
+#!/bin/bash
+.PHONY: documentation dev-front dev-back dev dev-back-test
+
+venv:
+	( \
+		pip install venv; \
+		source venv/bin/activate; \
+		pip install -r requirements.txt; \
+	)
+
+
+test: venv
+	( \
+		source venv/bin/activate; \
+		python3.10 -m unittest; \
+	)
+astar_pathfinding: venv test_astar_pathfinding
+	( \
+		source venv/bin/activate; \
+		python3.10 astar_pathfinding/Astar_pathfinding.py; \
+	)
