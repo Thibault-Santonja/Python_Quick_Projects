@@ -90,56 +90,7 @@ class Grid(object):
             self.__draw_cases()
 
             # For each received event, check it's type and process an action (if necessary)
-            for event in pygame.event.get():
-
-                # Quit the UI
-                if event.type == pygame.QUIT:
-                    run = False
-
-                # Get a mouse click
-                if pygame.mouse.get_pressed()[0]:  # LEFT CLICK
-                    # Get where the click happens (on which case)
-                    case = self.__get_case(self.__get_click_position(pygame.mouse.get_pos()))
-
-                    # If the start isn't set, set it, else if the end isn't set, set it and
-                    # finally, if start and end are set, create an obstacle
-                    if not start and case != end:
-                        start = case  # Save the starting case
-                        start.set_start()
-                    elif not end and case != start:
-                        end = case  # Save the ending case
-                        end.set_end()
-                    elif case != end and case != start:
-                        case.set_obstacle()
-
-                elif pygame.mouse.get_pressed()[2]:  # RIGHT CLICK
-                    # Get where the click happens (on which case)
-                    case = self.__get_case(self.__get_click_position(pygame.mouse.get_pos()))
-
-                    # Reset the case type / color
-                    case.reset()
-
-                    # If it's the start or the end, reset the corresponding variable
-                    if case == start:
-                        start = None
-                    elif case == end:
-                        end = None
-
-                # Get a keyboard action
-                if event.type == pygame.KEYDOWN:
-                    # If the start and the end are seted, init each cases' neighbors
-                    # and launch A* algorithm
-                    if event.key == pygame.K_SPACE and start and end:
-                        for row in self.__grid:
-                            for case in row:
-                                case.update_neighbors(self)  # Init neighbors
-
-                        # Launch A* algorithm
-                        self.__search_path_A_star(start, end)
-
-                    # Quit the UI
-                    if event.key == pygame.K_ESCAPE:
-                        run = False
+            start, end, run = self._catch_event(start, end, run)
 
         pygame.quit()
 
@@ -240,3 +191,100 @@ class Grid(object):
 
         # If nothing is found
         return False
+
+    def _catch_event(self, start, end, run):
+        """
+
+        @param start:
+        @param end:
+        @param run:
+        @return:
+        @return:
+        """
+        for event in pygame.event.get():
+
+            # Quit the UI
+            if event.type == pygame.QUIT:
+                run = False
+
+            # Get a mouse click
+            if pygame.mouse.get_pressed()[0]:  # LEFT CLICK
+                start, end = self._trigger_left_click(start, end)
+
+            elif pygame.mouse.get_pressed()[2]:  # RIGHT CLICK
+                start, end = self._trigger_right_click(start, end)
+
+            # Get a keyboard action
+            if event.type == pygame.KEYDOWN:
+                run = self._trigger_keyboard(start, end, event)
+
+        return start, end, run
+
+    def _trigger_left_click(self, start, end):
+        """
+        @param start:
+        @param end:
+        @return:
+        """
+        # Get where the click happens (on which case)
+        case = self.__get_case(self.__get_click_position(pygame.mouse.get_pos()))
+
+        # If the start isn't set, set it, else if the end isn't set, set it and
+        # finally, if start and end are set, create an obstacle
+        if not start and case != end:
+            start = case  # Save the starting case
+            start.set_start()
+        elif not end and case != start:
+            end = case  # Save the ending case
+            end.set_end()
+        elif case != end and case != start:
+            case.set_obstacle()
+
+        return start, end
+
+    def _trigger_right_click(self, start, end):
+        """
+
+        @param start:
+        @param end:
+        @return:
+        """
+
+        # Get where the click happens (on which case)
+        case = self.__get_case(self.__get_click_position(pygame.mouse.get_pos()))
+
+        # Reset the case type / color
+        case.reset()
+
+        # If it's the start or the end, reset the corresponding variable
+        if case == start:
+            start = None
+        elif case == end:
+            end = None
+
+        return start, end
+
+    def _trigger_keyboard(self, start, end, event):
+        """
+
+        @param start:
+        @param end:
+        @param run:
+        @return:
+        """
+
+        # If the start and the end are seted, init each cases' neighbors
+        # and launch A* algorithm
+        if event.key == pygame.K_SPACE and start and end:
+            for row in self.__grid:
+                for case in row:
+                    case.update_neighbors(self)  # Init neighbors
+
+            # Launch A* algorithm
+            self.__search_path_A_star(start, end)
+
+        # Quit the UI
+        if event.key == pygame.K_ESCAPE:
+            return False
+
+        return True
