@@ -12,6 +12,19 @@ from snake import Snake
 
 
 class Board:
+    """
+    _screen: Screen size in pixels
+    _continue: Boolean to stop the game
+    _block_size: Size of square in pixels
+    _map_size: number of blocb per line and column
+    _step_duration: Time in second between each movement
+    _rest: rest of the division between map size and screen size
+    _snake: store the Snake instance
+    _food: store a Point instance to locate the food
+    _score_font: Store the font of the UI
+    _initial_length: Initial snake size
+
+    """
     _screen = 800
     _continue = False
     _block_size = 20
@@ -21,12 +34,12 @@ class Board:
     _snake = None
     _food = None
     _score_font = None
-    _finished = False
     _initial_length = 3
 
-    def __init__(self, window_width: int = 800, map_size: int = 30, initial_length=3) -> None:
+    def __init__(self, window_width: int = 800, map_size: int = 30, initial_length: int = 3) -> None:
         """
 
+        @type initial_length: int
         @type map_size: int
         @type window_width: int
         """
@@ -41,14 +54,6 @@ class Board:
             color=config.SNAKE)
         self.initial_length = initial_length
         self._snake = Snake.Snake(snake_head, self.initial_length)
-
-    @property
-    def is_finished(self):
-        """
-
-        @return:
-        """
-        return self._finished
 
     def _init_screen(self) -> None:
         """
@@ -74,9 +79,12 @@ class Board:
 
     def _calculate_position(self, move_x: int, move_y: int) -> Point.Point:
         """
+        Verify if snake head touch a food or a border
 
         @param move_x:
         @param move_y:
+        @type move_x: int
+        @type move_y: int
         @return:
         """
         tail = None
@@ -95,11 +103,11 @@ class Board:
                 self._snake.head.y < self._rest or self._snake.head.y > self._block_size * self._map_size:
             self._continue = False
 
-
         return tail
 
-    def _create_food(self):
+    def _create_food(self) -> None:
         """
+        Generate a piece of food
 
         @return:
         """
@@ -110,11 +118,14 @@ class Board:
         pygame.draw.rect(self._screen, self._food.color,
                          [self._food.x, self._food.y, self._block_size, self._block_size])
 
-    def _update_snake_position(self, move_x: int, move_y: int):
+    def _update_snake_position(self, move_x: int, move_y: int) -> None:
         """
+        Update UI for snake position
 
         @param move_x:
         @param move_y:
+        @type move_x: int
+        @type move_y: int
         @return:
         """
         # Calculate new position
@@ -129,12 +140,15 @@ class Board:
             pygame.draw.rect(self._screen, config.BOARD,
                              [old_tail_position.x, old_tail_position.y, self._block_size, self._block_size])
 
-    def _keyboard_action(self, event, move_x, move_y):
+    def _keyboard_action(self, event, move_x: int, move_y: int) -> (int, int, bool):
         """
+        Get keyboard action
 
         @param event:
         @param move_x:
         @param move_y:
+        @type move_x: int
+        @type move_y: int
         @return:
         """
         move_entry = False
@@ -172,11 +186,14 @@ class Board:
 
         return move_x, move_y, move_entry
 
-    def _start_game(self, move_x, move_y):
+    def _start_game(self, move_x: int, move_y: int) -> (int, int):
         """
+        Begining of the game, waiting for start
 
         @param move_x:
         @param move_y:
+        @type move_x: int
+        @type move_y: int
         @return:
         """
         while not self._continue:
@@ -187,19 +204,21 @@ class Board:
 
         return move_x, move_y
 
-    def _score(self, score):
+    def _score(self, score: int) -> None:
         """
+        display score
 
         @param score:
+        @type score: int
         @return:
         """
         self._screen.blit(self._score_font.render(f"Your Score: {score-1}", True, config.BOARD), [0, 0])
         self._screen.blit(self._score_font.render(f"Your Score: {score}", True, config.SNAKE), [0, 0])
 
-    def _game_over(self):
+    def _game_over(self) -> None:
         """
+        managed end game
 
-        @param score:
         @return:
         """
         self._screen.blit(self._score_font.render("Game Over !", True, config.SNAKE),
@@ -218,10 +237,9 @@ class Board:
                             pygame.quit()
                             stop = True
 
-
-
     def run(self) -> None:
         """
+        Run the game
 
         @return:
         """
@@ -240,7 +258,7 @@ class Board:
                     move_x, move_y, move_entry = self._keyboard_action(event, move_x, move_y)
 
             self._update_snake_position(move_x, move_y)
-            self._score(self._snake.lenght - self.initial_length)
+            self._score(self._snake.length - self.initial_length)
 
             # pygame.display.update()
             time.sleep(self._step_duration)

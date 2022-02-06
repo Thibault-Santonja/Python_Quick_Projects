@@ -6,7 +6,7 @@ from snake import Board
 
 def launch_game() -> None:
     """
-
+    Init the UI and launch it
     """
     board = Board.Board()
     board.run()
