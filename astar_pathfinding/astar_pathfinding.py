@@ -20,4 +20,3 @@ def launch_astar():
     # Init the grid and run it
     grid = Grid.Grid(nb_rows, window, window_width)
     grid.run()
-
