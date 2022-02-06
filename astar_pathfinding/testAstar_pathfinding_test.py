@@ -1,10 +1,9 @@
-from unittest import TestCase
 import unittest
 
 from astar_pathfinding import Case
 
 
-class TestGrid(TestCase):
+class TestGrid(unittest.TestCase):
     pass
 
 
