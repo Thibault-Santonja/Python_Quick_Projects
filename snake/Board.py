@@ -11,6 +11,74 @@ from snake import config
 from snake import Snake
 
 
+def _handle_left(move_x: int, move_y: int, bloc_size: int) -> tuple:
+    """
+
+    @param move_x:
+    @param move_y:
+    @return:
+    """
+    if move_x >= 0:
+        return -bloc_size, 0, True
+    return move_x, move_y, False
+
+
+def _handle_right(move_x: int, move_y: int, bloc_size: int) -> tuple:
+    """
+
+    @param move_x:
+    @param move_y:
+    @return:
+    """
+    if move_x >= 0:
+        return bloc_size, 0, True
+    return move_x, move_y, False
+
+
+def _handle_up(move_x: int, move_y: int, bloc_size: int) -> tuple:
+    """
+
+    @param move_x:
+    @param move_y:
+    @return:
+    """
+    if move_y >= 0:
+        return 0, bloc_size, True
+    return move_x, move_y, False
+
+
+def _handle_down(move_x: int, move_y: int, bloc_size: int) -> tuple:
+    """
+
+    @param move_x:
+    @param move_y:
+    @return:
+    """
+    if move_y >= 0:
+        return 0, -bloc_size, True
+    return move_x, move_y, False
+
+
+def _handle_escape(move_x: int, move_y: int, _) -> tuple:
+    """
+
+    @param move_x:
+    @param move_y:
+    @return:
+    """
+    pygame.quit()
+    return move_x, move_y, False
+
+
+KEYBOARD_EVENT = {
+    pygame.K_LEFT: _handle_left,
+    pygame.K_RIGHT: _handle_right,
+    pygame.K_UP: _handle_up,
+    pygame.K_DOWN: _handle_down,
+    pygame.K_ESCAPE: _handle_escape
+}
+
+
 class Board:
     """
     _screen: Screen size in pixels
@@ -161,10 +229,12 @@ class Board:
         # Quit the UI
         if event.type == pygame.QUIT:
             pygame.quit()
+        elif event.type == pygame.KEYDOWN:
+            event_handler = KEYBOARD_EVENT.get(event.key)
+            move_x, move_y, move_entry = event_handler(move_x, move_y, self._block_size)
 
-        if event.type == pygame.KEYDOWN:
-            match event.key:   # noqa
-                # Movement
+            """
+            match event.key:  # noqa
                 case pygame.K_LEFT:
                     if move_x >= 0:
                         move_x = -self._block_size
@@ -185,9 +255,9 @@ class Board:
                         move_x = 0
                         move_y = -self._block_size
                         move_entry = True
-                # Quit the UI
                 case pygame.K_ESCAPE:
                     pygame.quit()
+            """
 
         return move_x, move_y, move_entry
 
