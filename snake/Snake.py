@@ -77,13 +77,13 @@ class Snake:
         self._head.x += delta_x
         self._head.y += delta_y
 
-        if self._control_self_eating():
+        if self._is_self_eating():
             return False
 
         self._body.append(copy.copy(self.head))
         return True
 
-    def _control_self_eating(self) -> bool:
+    def _is_self_eating(self) -> bool:
         """
         Check if the snake eat itself
 
@@ -91,5 +91,17 @@ class Snake:
         """
         for element in self._body[:-1]:
             if element == self._head:
+                return True
+        return False
+
+    def is_overlap(self, point: Point.Point) -> bool:
+        """
+        Check if the snake eat itself
+
+        @param point:
+        @return:
+        """
+        for element in self._body:
+            if element == point:
                 return True
         return False
