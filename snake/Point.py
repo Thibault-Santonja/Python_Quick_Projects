@@ -24,4 +24,3 @@ class Point:
         @return:
         """
         return self.x == other.x and self.y == other.y
-
