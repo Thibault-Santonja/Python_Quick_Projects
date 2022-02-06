@@ -28,7 +28,7 @@ class Grid(object):
         """Returns the length of grid rows (or column as long as it's a square grid)"""
         return self.__nb_rows
 
-    def get_grid(self) -> object:
+    def get_grid(self):
         """Returns the grid"""
         return self.__grid
 
@@ -61,12 +61,12 @@ class Grid(object):
         y, x = position
         return y // self.__size, x // self.__size
 
-    def __get_case(self, position: tuple) -> Case.Case:
+    def __get_case(self, position: tuple):
         """Returns a specific case"""
         row, col = position
         return self.__grid[row][col]
 
-    def __make_path(self, origin, current):
+    def __make_path(self, origin, current) -> None:
         # Draw the full founded path from end to start
         while current in origin:
             current = origin[current]
@@ -143,7 +143,7 @@ class Grid(object):
 
         pygame.quit()
 
-    def __search_path_A_star(self, start, end):
+    def __search_path_A_star(self, start, end) -> bool:
         """
         Uses A* algorithm to find a path:
 
