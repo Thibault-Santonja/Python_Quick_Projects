@@ -1,3 +1,6 @@
+#!/usr/bin/env python3.10
+# -*- coding: utf-8 -*-
+
 from unittest import TestCase
 from snake.Snake import Snake
 from snake.Point import Point

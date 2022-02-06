@@ -1,4 +1,6 @@
 #!/usr/bin/env python3.10
+# -*- coding: utf-8 -*-
+
 from snake import main as snake
 from astar_pathfinding import astar_pathfinding
 import sys

@@ -1,3 +1,6 @@
+#!/usr/bin/env python3.10
+# -*- coding: utf-8 -*-
+
 class Point:
     x: 0
     y: 0
