@@ -2,11 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from typing import Callable
+
 import config
 
 
-def _handle_unknown(argument: str) -> None:
-    print(f"Unknown argument : {argument}")
+def _handle_unknown(argument: str) -> Callable[[], None]:
+    def print_error():
+        print(f"Unknown argument : {argument}")
+    return print_error
 
 
 if __name__ == "__main__":

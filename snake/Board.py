@@ -233,32 +233,6 @@ class Board:
             event_handler = KEYBOARD_EVENT.get(event.key)
             move_x, move_y, move_entry = event_handler(move_x, move_y, self._block_size)
 
-            """
-            match event.key:  # noqa
-                case pygame.K_LEFT:
-                    if move_x >= 0:
-                        move_x = -self._block_size
-                        move_y = 0
-                        move_entry = True
-                case pygame.K_RIGHT:
-                    if move_x >= 0:
-                        move_x = self._block_size
-                        move_y = 0
-                        move_entry = True
-                case pygame.K_UP:
-                    if move_y >= 0:
-                        move_x = 0
-                        move_y = self._block_size
-                        move_entry = True
-                case pygame.K_DOWN:
-                    if move_y >= 0:
-                        move_x = 0
-                        move_y = -self._block_size
-                        move_entry = True
-                case pygame.K_ESCAPE:
-                    pygame.quit()
-            """
-
         return move_x, move_y, move_entry
 
     def _start_game(self, move_x: int, move_y: int) -> (int, int):
@@ -303,14 +277,12 @@ class Board:
         while not stop:
             for event in pygame.event.get():
                 # Quit the UI
-                match event.type:
-                    case pygame.QUIT:
-                        pygame.quit()
-                        stop = True
-                    case pygame.KEYDOWN:
-                        if pygame.K_ESCAPE:
-                            pygame.quit()
-                            stop = True
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    stop = True
+                if event.type == pygame.KEYDOWN and pygame.K_ESCAPE:
+                    pygame.quit()
+                    stop = True
 
     def run(self) -> None:
         """
