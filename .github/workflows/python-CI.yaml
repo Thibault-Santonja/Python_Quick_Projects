@@ -62,5 +62,5 @@ jobs:
       if: steps.flake8.outcome == 'success' && steps.flake8.conclusion == 'success'
       run: |
         # stop the build if there are Python compliant errors or warnings
-        flake8 . --count --show-source --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,env,venv
+        flake8 . --count --show-source --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,env,venv --max-line-length 120
         
