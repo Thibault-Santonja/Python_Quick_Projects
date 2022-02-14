@@ -13,3 +13,7 @@ venv/
 
 # Project specific
 draft_project/
+
+# Coverage analysis
+htmlcov/
+.coverage
