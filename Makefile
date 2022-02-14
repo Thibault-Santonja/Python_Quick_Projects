@@ -1,6 +1,8 @@
 #!/bin/bash
 .PHONY: astar_pathfinding snake
 
+MAINTAINER = "Thibault Santonja"
+
 ## General scripts
 venv:
 	( \
@@ -57,6 +59,7 @@ astar_pathfinding: venv test synthax_astar_pathfinding
 ## Snake game
 snake: venv test synthax_snake
 	( \
+		printf "\n\n\n--- Snake game by ${MAINTAINER} ---\n"; \
 		source venv/bin/activate; \
 		python3.10 main.py snake; \
 	)
