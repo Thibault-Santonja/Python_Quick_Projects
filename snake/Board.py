@@ -10,6 +10,7 @@ from snake import Point
 from snake import config
 from snake import Snake
 
+
 class Board:
     """
     _screen: Screen size in pixels
