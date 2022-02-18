@@ -1,0 +1,66 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Continuous Integration Workflow
+
+on:
+  - push
+  - pull_request
+
+jobs:
+
+  unittest:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python3.10 -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Test with unittest
+      run: |
+        python3.10 -m unittest
+        
+        
+  Flake8:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.10"
+        
+    - name: Install dependencies
+      run: |
+        python3.10 -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Install flake8
+      id: flake8
+      continue-on-error: true
+      run: |
+        pip install flake8
+        
+    - name: Lint with flake8
+      if: steps.flake8.outcome == 'success' && steps.flake8.conclusion == 'success'
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,env,venv
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,env,venv
+        
+    - name: Lint with flake8 full analysis
+      continue-on-error: true
+      if: steps.flake8.outcome == 'success' && steps.flake8.conclusion == 'success'
+      run: |
+        # stop the build if there are Python compliant errors or warnings
+        flake8 . --count --show-source --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,env,venv --max-line-length 120
+        

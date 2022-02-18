@@ -11,74 +11,6 @@ from snake import config
 from snake import Snake
 
 
-def _handle_left(move_x: int, move_y: int, bloc_size: int) -> tuple:
-    """
-
-    @param move_x:
-    @param move_y:
-    @return:
-    """
-    if move_x >= 0:
-        return -bloc_size, 0, True
-    return move_x, move_y, False
-
-
-def _handle_right(move_x: int, move_y: int, bloc_size: int) -> tuple:
-    """
-
-    @param move_x:
-    @param move_y:
-    @return:
-    """
-    if move_x >= 0:
-        return bloc_size, 0, True
-    return move_x, move_y, False
-
-
-def _handle_up(move_x: int, move_y: int, bloc_size: int) -> tuple:
-    """
-
-    @param move_x:
-    @param move_y:
-    @return:
-    """
-    if move_y >= 0:
-        return 0, bloc_size, True
-    return move_x, move_y, False
-
-
-def _handle_down(move_x: int, move_y: int, bloc_size: int) -> tuple:
-    """
-
-    @param move_x:
-    @param move_y:
-    @return:
-    """
-    if move_y >= 0:
-        return 0, -bloc_size, True
-    return move_x, move_y, False
-
-
-def _handle_escape(move_x: int, move_y: int, _) -> tuple:
-    """
-
-    @param move_x:
-    @param move_y:
-    @return:
-    """
-    pygame.quit()
-    return move_x, move_y, False
-
-
-KEYBOARD_EVENT = {
-    pygame.K_LEFT: _handle_left,
-    pygame.K_RIGHT: _handle_right,
-    pygame.K_UP: _handle_up,
-    pygame.K_DOWN: _handle_down,
-    pygame.K_ESCAPE: _handle_escape
-}
-
-
 class Board:
     """
     _screen: Screen size in pixels
@@ -103,6 +35,7 @@ class Board:
     _food = None
     _score_font = None
     _initial_length = 3
+    _board_drawn = False
 
     def __init__(self, window_width: int = 800, map_size: int = 30, initial_length: int = 3) -> None:
         """
@@ -122,6 +55,68 @@ class Board:
             color=config.SNAKE)
         self.initial_length = initial_length
         self._snake = Snake.Snake(snake_head, self.initial_length)
+        self.keyboard_event = {
+            pygame.K_LEFT: self._handle_left,
+            pygame.K_RIGHT: self._handle_right,
+            pygame.K_UP: self._handle_up,
+            pygame.K_DOWN: self._handle_down,
+            pygame.K_ESCAPE: self._handle_escape
+        }
+
+    def _handle_left(self, move_x: int, move_y: int) -> tuple:
+        """
+
+        @param move_x:
+        @param move_y:
+        @return:
+        """
+        if move_x >= 0:
+            return -self._block_size, 0, True
+        return move_x, move_y, False
+
+    def _handle_right(self, move_x: int, move_y: int) -> tuple:
+        """
+
+        @param move_x:
+        @param move_y:
+        @return:
+        """
+        if move_x >= 0:
+            return self._block_size, 0, True
+        return move_x, move_y, False
+
+    def _handle_up(self, move_x: int, move_y: int) -> tuple:
+        """
+
+        @param move_x:
+        @param move_y:
+        @return:
+        """
+        if move_y >= 0:
+            return 0, self._block_size, True
+        return move_x, move_y, False
+
+    def _handle_down(self, move_x: int, move_y: int) -> tuple:
+        """
+
+        @param move_x:
+        @param move_y:
+        @return:
+        """
+        if move_y >= 0:
+            return 0, -self._block_size, True
+        return move_x, move_y, False
+
+    def _handle_escape(self, move_x: int, move_y: int) -> tuple:
+        """
+
+        @param move_x:
+        @param move_y:
+        @return:
+        """
+        # pygame.quit()
+        self._board_drawn = False
+        return move_x, move_y, False
 
     def _init_screen(self) -> None:
         """
@@ -132,6 +127,7 @@ class Board:
         pygame.display.set_caption('Snake Game')
         self._screen.fill(config.BOARD)
         self._score_font = pygame.font.SysFont('dejavusans', 32)
+        self._board_drawn = True
 
     def _draw_grid(self):
         """
@@ -139,8 +135,8 @@ class Board:
         """
         grid_size = self._block_size * self._map_size
 
-        for id_x, x in enumerate(range(self._rest, grid_size, self._block_size)):
-            for id_y, y in enumerate(range(self._rest, grid_size, self._block_size)):
+        for x in range(self._rest, grid_size, self._block_size):
+            for y in range(self._rest, grid_size, self._block_size):
                 rect = pygame.Rect(x, y, self._block_size, self._block_size)
                 pygame.draw.rect(self._screen, config.GRID, rect, 1)
         pygame.display.update()
@@ -228,7 +224,8 @@ class Board:
 
         # Quit the UI
         if event.type == pygame.QUIT:
-            pygame.quit()
+            self._board_drawn = False
+
         elif event.type == pygame.KEYDOWN:
             event_handler = KEYBOARD_EVENT.get(event.key)
             if event_handler:
@@ -248,9 +245,12 @@ class Board:
         """
         while not self._continue:
             for event in pygame.event.get():
-                move_x, move_y, _ = self._keyboard_action(event, move_x, move_y)
-                if move_y + move_x != 0:
-                    self._continue = True
+                if self._board_drawn:
+                    move_x, move_y, _ = self._keyboard_action(event, move_x, move_y)
+                    if move_y + move_x != 0:
+                        self._continue = True
+                else:
+                    return None, None
 
         return move_x, move_y
 
@@ -297,7 +297,7 @@ class Board:
         self._create_food()
         move_x, move_y = self._start_game(0, 0)
 
-        while self._continue:
+        while self._continue and self._board_drawn:
             move_entry = False
             self._draw_grid()
             for event in pygame.event.get():
