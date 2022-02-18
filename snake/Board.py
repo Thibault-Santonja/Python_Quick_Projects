@@ -228,7 +228,9 @@ class Board:
 
         elif event.type == pygame.KEYDOWN:
             event_handler = self.keyboard_event.get(event.key)
-            move_x, move_y, move_entry = event_handler(move_x, move_y)
+            
+            if event_handler:
+                move_x, move_y, move_entry = event_handler(move_x, move_y)
 
         return move_x, move_y, move_entry
 
