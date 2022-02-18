@@ -1,9 +1,12 @@
+from brick_breaker import Board
+
 
 def launch_game() -> None:
     """
     Init the UI and launch it
     """
-    pass
+    board = Board.Board()
+    board.launch()
 
 
 if __name__ == "__main__":
