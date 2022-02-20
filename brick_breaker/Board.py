@@ -4,7 +4,7 @@
 import time
 import pygame
 
-from brick_breaker import Pad, Ball, Brick
+from brick_breaker import Pad, Ball, Brick, keyboard
 
 
 class Board:
@@ -69,5 +69,19 @@ class Board:
 
     def launch(self):
         self._init_game()
+        continue_game = True
 
-        time.sleep(10)
+        while continue_game:
+            time.sleep(1/60)  # 60 fps
+
+            for event in pygame.event.get():
+                res = keyboard.get_keyboard_action(event)
+                print(res)
+                if res:
+                    _, horizontal = res
+                else:
+                    continue_game = False
+
+        print("See you !")
+        time.sleep(5)
+        pygame.quit()
