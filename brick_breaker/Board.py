@@ -86,7 +86,7 @@ class Board:
                     _, horizontal_movement = res
                 else:
                     continue_game = False
-            self._pad.update_position(horizontal_movement * self._width // 50, pygame, self._screen)
+            self._pad.update_position(horizontal_movement * self._width // 50, self._width, pygame, self._screen)
             pygame.display.update()
 
         print("See you !")
