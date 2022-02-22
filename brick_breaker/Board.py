@@ -60,16 +60,21 @@ class Board:
                 brick.draw(pygame, self._screen)
                 self._bricks.append(brick)
 
-        pygame.display.update()
+    def _init_pad(self):
+        pad_size = self._width // 6
+        self._pad = Pad.Pad(x=(self._width + pad_size)//2, y=self._height-20, size=pad_size)
+        self._pad.draw(pygame, self._screen)
 
     def _init_game(self):
         # Init screen and draw it
         self._init_screen()
         self._init_bricks()
+        self._init_pad()
 
     def launch(self):
         self._init_game()
         continue_game = True
+        horizontal_movement = 0
 
         while continue_game:
             time.sleep(1/60)  # 60 fps
@@ -78,10 +83,12 @@ class Board:
                 res = keyboard.get_keyboard_action(event)
                 print(res)
                 if res:
-                    _, horizontal = res
+                    _, horizontal_movement = res
                 else:
                     continue_game = False
+            self._pad.update_position(horizontal_movement * self._width // 50, pygame, self._screen)
+            pygame.display.update()
 
         print("See you !")
-        time.sleep(5)
+        time.sleep(1)
         pygame.quit()
