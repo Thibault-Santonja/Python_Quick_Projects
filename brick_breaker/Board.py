@@ -62,14 +62,19 @@ class Board:
 
     def _init_pad(self):
         pad_size = self._width // 6
-        self._pad = Pad.Pad(x=(self._width + pad_size)//2, y=self._height-20, size=pad_size)
+        self._pad = Pad.Pad(x=(self._width - pad_size)//2, y=self._height-20, size=pad_size)
         self._pad.draw(pygame, self._screen)
+
+    def _init_ball(self):
+        self._ball = Ball.Ball(x=self._width//2, y=self._height-25)
+        self._ball.draw(pygame, self._screen)
 
     def _init_game(self):
         # Init screen and draw it
         self._init_screen()
         self._init_bricks()
         self._init_pad()
+        self._init_ball()
 
     def launch(self):
         self._init_game()

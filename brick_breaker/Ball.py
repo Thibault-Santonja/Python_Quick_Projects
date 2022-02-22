@@ -1,9 +1,15 @@
+from brick_breaker import config
+
+
 class Ball:
-    x: int = None
-    y: int = None
-    size: int = 2
-    color: tuple = (156, 15, 72, .9)
+    _x: int = None
+    _y: int = None
+    _size: int = 5
+    _color: tuple = config.COLORS["BALL"]
 
     def __init__(self, x: int, y: int):
-        self.x = x
-        self.y = y
+        self._x = x
+        self._y = y
+
+    def draw(self, pygame, screen):
+        pygame.draw.circle(screen, self._color, (self._x, self._y), self._size)

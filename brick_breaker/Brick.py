@@ -15,4 +15,4 @@ class Brick:
         self._size_y = size_y
 
     def draw(self, pygame, screen):
-        pygame.draw.rect(screen, self._color, [self._x, self._y, self._size_x, self._size_y])
+        pygame.draw.rect(screen, self._color, (self._x, self._y, self._size_x, self._size_y))

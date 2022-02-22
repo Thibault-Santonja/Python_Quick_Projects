@@ -13,14 +13,14 @@ class Pad:
         self._size = size
 
     def draw(self, pygame, screen):
-        pygame.draw.rect(screen, self._color, [self._x, self._y, self._size, 10])
+        pygame.draw.rect(screen, self._color, (self._x, self._y, self._size, 10))
 
     def erase(self,pygame, screen):
-        pygame.draw.rect(screen, config.COLORS["BOARD"], [self._x, self._y, self._size, 20])
+        pygame.draw.rect(screen, config.COLORS["BOARD"], (self._x, self._y, self._size, 20))
 
     def update_position(self, delta_x, screen_width, pygame, screen):
         self.erase(pygame, screen)
-        if 0 <= self._x and delta_x < 0:
+        if delta_x < 0 <= self._x:
             self._x += delta_x
         elif self._x + self._size <= screen_width and delta_x > 0:
             self._x += delta_x
