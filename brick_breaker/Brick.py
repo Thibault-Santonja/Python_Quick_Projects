@@ -1,9 +1,12 @@
+from brick_breaker import config
+
+
 class Brick:
     _x: int = None
     _y: int = None
     _size_x: int = None
     _size_y: int = None
-    _color: tuple = (214, 125, 62, .9)
+    _color: tuple = config.COLORS["BRICK"]
 
     def __init__(self, x: int, y: int, size_x: int, size_y: int,):
         self._x = x

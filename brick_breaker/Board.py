@@ -4,13 +4,13 @@
 import time
 import pygame
 
-from brick_breaker import Pad, Ball, Brick, keyboard
+from brick_breaker import Pad, Ball, Brick, keyboard, config
 
 
 class Board:
     _height: int = 600
     _width: int = 800
-    _color: tuple = (249, 228, 212)
+    _color: tuple = config.COLORS["BOARD"]
     _bricks: list = None
     _bricks_columns: int = 8
     _bricks_layers: int = 5
