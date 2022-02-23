@@ -15,7 +15,7 @@ class Pad:
     def draw(self, pygame, screen):
         pygame.draw.rect(screen, self._color, (self._x, self._y, self._size, 10))
 
-    def erase(self,pygame, screen):
+    def erase(self, pygame, screen):
         pygame.draw.rect(screen, config.COLORS["BOARD"], (self._x, self._y, self._size, 20))
 
     def update_position(self, delta_x, screen_width, pygame, screen):
