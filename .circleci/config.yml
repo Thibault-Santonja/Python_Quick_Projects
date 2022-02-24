@@ -5,22 +5,62 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+  unittest:
+    docker:   
+      - image: python:3.10-slim-bullseye
     steps:
-      - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+     - checkout
+     - run:
+       name: "Install dependencies"
+       command: 
+       - python3.10 -m pip install --upgrade pip
+       - pip install -r requirements.txt
+    - run:
+      name: Test with unittest
+      command:
+      - python3.10 -m unittest
+        
+        
+  Flake8:
+    docker:   
+      - image: python:3.10-slim-bullseye
+    steps:
+    - checkout
+    - run:
+      name: "Install dependencies"
+      command: 
+      - python3.10 -m pip install --upgrade pip
+      - pip install -r requirements.txt
+    - run:
+      name: "Install flake8"
+      command: 
+      - pip install flake8
+    - run:
+      name: "Lint with flake8"
+      if: steps.flake8.outcome == 'success' && steps.flake8.conclusion == 'success'
+      command: 
+      - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --show-source --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,env,venv
+        
+        
+  Build:
+    docker:   
+      - image: python:3.10-slim-bullseye
+    steps:
+    - checkout
+    - run:
+      name: "Build"
+      command: 
+      - echo "Build"
+        
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  say-hello-workflow:
+  CI-workflow:
     jobs:
-      - say-hello
+      - unittest
+      - Flake8
+  CD-workflow:
+    jobs:
+      - Build
+    
