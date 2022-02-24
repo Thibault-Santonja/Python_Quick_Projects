@@ -7,8 +7,7 @@ import pygame
 from brick_breaker import keyboard, config
 
 
-def trigger_game_over():
-    print("See you !")
+def trigger_game_over() -> None:
     time.sleep(1)
     pygame.quit()
 
@@ -27,10 +26,14 @@ class Board:
     _score_font: pygame.font.Font = None
     _score: int = 0
 
-    def __init__(self):
-        pass
+    def __init__(self) -> None:
+        # Init screen and draw it
+        self._init_screen()
+        self._init_bricks()
+        self._init_pad()
+        self._init_ball()
 
-    def __del__(self):
+    def __del__(self) -> None:
         pygame.quit()
 
     def _init_screen(self) -> None:
@@ -44,7 +47,7 @@ class Board:
         self._score_font = pygame.font.SysFont('dejavusans', 32)
         pygame.display.update()
 
-    def _init_bricks(self, screen_layer_proportion: float = .40, block_gap: int = 2):
+    def _init_bricks(self, screen_layer_proportion: float = .40, block_gap: int = 2) -> None:
         """
 
         @type screen_layer_proportion: float
@@ -66,7 +69,7 @@ class Board:
                 self._draw(config.COLORS["BRICK"], brick)
                 self._bricks.append(brick)
 
-    def _init_pad(self):
+    def _init_pad(self) -> None:
         pad_size = self._width // 6
         x = (self._width - pad_size) // 2
         y = self._height - 20
@@ -74,7 +77,7 @@ class Board:
         self._pad = pygame.Rect(x, y, pad_size, 10)
         self._draw(config.COLORS["PAD"], self._pad)
 
-    def _init_ball(self):
+    def _init_ball(self) -> None:
         ball_size = 5
         x = self._width // 2
         y = self._height - 25
@@ -82,17 +85,10 @@ class Board:
         self._ball = pygame.Rect(x, y, ball_size, ball_size)
         self._draw(config.COLORS["BALL"], self._ball)
 
-    def _init_game(self):
-        # Init screen and draw it
-        self._init_screen()
-        self._init_bricks()
-        self._init_pad()
-        self._init_ball()
-
-    def _draw(self, color: tuple, rect: pygame.Rect):
+    def _draw(self, color: tuple, rect: pygame.Rect) -> None:
         pygame.draw.rect(self._screen, color, rect)
 
-    def _update_pad_position(self, delta_x: int):
+    def _update_pad_position(self, delta_x: int) -> None:
         if (delta_x < 0 <= self._pad.x) or (self._pad.x + self._pad.width <= self._width and delta_x > 0):
             # Erase pad
             self._draw(config.COLORS["BOARD"], self._pad)
@@ -108,7 +104,7 @@ class Board:
             # Redraw it
             self._draw(config.COLORS["PAD"], self._pad)
 
-    def _check_wall_ball_overlap(self):
+    def _check_wall_ball_overlap(self) -> None:
         if 0 >= self._ball.x or self._ball.x >= self._width:
             self._ball_direction[0] *= -1
 
@@ -116,7 +112,7 @@ class Board:
         if 0 >= self._ball.y or self._ball.y >= self._height:
             self._ball_direction[1] *= -1
 
-    def _check_wall_brick_overlap(self):
+    def _check_wall_brick_overlap(self) -> None:
         brick_overlapped = self._ball.collidelist(self._bricks)
 
         if brick_overlapped >= 0:
@@ -125,7 +121,7 @@ class Board:
             self._ball_direction[1] *= -1
             self._score += 1
 
-    def _check_wall_pad_overlap(self):
+    def _check_wall_pad_overlap(self) -> None:
         if self._ball.colliderect(self._pad):
             self._ball_direction[1] *= -1
 
@@ -150,7 +146,7 @@ class Board:
             return False
         return True
 
-    def _update_board(self, pad_horizontal_movement: int):
+    def _update_board(self, pad_horizontal_movement: int) -> bool:
         continue_game = True
 
         self._update_pad_position(pad_horizontal_movement)
@@ -160,8 +156,7 @@ class Board:
         pygame.display.update()
         return continue_game
 
-    def launch(self):
-        self._init_game()
+    def launch(self) -> None:
         continue_game = True
         horizontal_movement = 0
 
@@ -180,6 +175,8 @@ class Board:
 
             if continue_game and not self._bricks:
                 continue_game = False
-                print("GG !")
+                # Todo : Print GG message
+                return trigger_game_over()
 
-        trigger_game_over()
+        # Todo : Print Game Over message
+        return trigger_game_over()
