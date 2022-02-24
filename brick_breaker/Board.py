@@ -8,6 +8,7 @@ from brick_breaker import keyboard, config
 
 
 def trigger_game_over() -> None:
+    # Todo : to update to replay the game
     time.sleep(1)
     pygame.quit()
 
