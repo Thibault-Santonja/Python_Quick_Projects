@@ -1,0 +1,65 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+jobs:
+  unittest:
+    docker:   
+      - image: python:3.10-slim-bullseye
+    steps:
+      - checkout
+      - run:
+          name: "Install dependencies"
+          command: |
+            python3.10 -m pip install --upgrade pip
+            pip install -r requirements.txt
+      - run:
+          name: Test with unittest
+          command: |
+            python3.10 -m unittest
+        
+        
+  Flake8:
+    docker:   
+      - image: python:3.10-slim-bullseye
+    steps:
+      - checkout
+      - run:
+          name: "Install dependencies"
+          command: |
+            python3.10 -m pip install --upgrade pip
+            pip install -r requirements.txt
+      - run:
+          name: "Install flake8"
+          command: |
+            pip install flake8
+      - run:
+          name: "Lint with flake8"
+          command: |
+            flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --show-source --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,env,venv
+          
+        
+  Build:
+    docker:   
+      - image: python:3.10-slim-bullseye
+    steps:
+    - checkout
+    - run:
+        name: "Build"
+        command: |
+          echo "Build"
+        
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  CI-workflow:
+    jobs:
+      - unittest
+      - Flake8
+  CD-workflow:
+    jobs:
+      - Build
+    
