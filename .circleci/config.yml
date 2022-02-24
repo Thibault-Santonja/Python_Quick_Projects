@@ -10,7 +10,7 @@ orbs:
 jobs:
   unittest:
     docker:   
-      - image: python:3.10-slim-bullseye
+      - image: python:3.10
     steps:
       - checkout
       - run:
@@ -27,7 +27,6 @@ jobs:
           command: |
             coverage run -m unittest
             coverage xml
-        
         
   Flake8:
     docker:   
@@ -48,7 +47,6 @@ jobs:
           command: |
             flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --show-source --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,env,venv
           
-        
   Build:
     docker:   
       - image: python:3.10-slim-bullseye
@@ -67,7 +65,7 @@ workflows:
     jobs:
       - unittest:
           post-steps:
-            - codecov/upload
+          - codecov/upload
       - Flake8
   CD-workflow:
     jobs:
