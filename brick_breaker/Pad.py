@@ -20,8 +20,10 @@ class Pad:
 
     def update_position(self, delta_x, screen_width, pygame, screen):
         self.erase(pygame, screen)
+
         if delta_x < 0 <= self._x:
             self._x += delta_x
         elif self._x + self._size <= screen_width and delta_x > 0:
             self._x += delta_x
+
         self.draw(pygame, screen)

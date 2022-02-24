@@ -92,7 +92,9 @@ class Board:
                 else:
                     continue_game = False
             self._pad.update_position(horizontal_movement * self._width // 50, self._width, pygame, self._screen)
-            self._ball.update_position(self._width // 200, self._width, self._height, pygame, self._screen)
+            if not self._ball.update_position(self._width // 200, self._width, self._height, pygame, self._screen):
+                continue_game = False
+
             pygame.display.update()
 
         print("See you !")
