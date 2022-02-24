@@ -7,14 +7,14 @@ version: 2.1
 jobs:
   unittest:
     docker:   
-      - image: python:3.10-slim-bullseye
+    - image: python:3.10-slim-bullseye
     steps:
-     - checkout
-     - run:
-       name: "Install dependencies"
-       command: 
-       - python3.10 -m pip install --upgrade pip
-       - pip install -r requirements.txt
+    - checkout
+    - run:
+      name: "Install dependencies"
+      command: 
+      - python3.10 -m pip install --upgrade pip
+      - pip install -r requirements.txt
     - run:
       name: Test with unittest
       command:
@@ -23,7 +23,7 @@ jobs:
         
   Flake8:
     docker:   
-      - image: python:3.10-slim-bullseye
+    - image: python:3.10-slim-bullseye
     steps:
     - checkout
     - run:
@@ -37,7 +37,6 @@ jobs:
       - pip install flake8
     - run:
       name: "Lint with flake8"
-      if: steps.flake8.outcome == 'success' && steps.flake8.conclusion == 'success'
       command: 
       - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --show-source --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,env,venv
         
