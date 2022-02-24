@@ -11,7 +11,13 @@ def _handle_astar(**kwargs) -> None:
     astar_pathfinding.launch_astar()
 
 
+def _handle_brick_breaker(**kwargs) -> None:
+    from brick_breaker import main as brick_breaker
+    brick_breaker.launch_game()
+
+
 ARGUMENT_MAPPING = {
     "snake": _handle_snake,
-    "astar": _handle_astar
+    "astar": _handle_astar,
+    "brick_breaker": _handle_brick_breaker
 }

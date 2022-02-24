@@ -1,5 +1,5 @@
 #!/bin/bash
-.PHONY: astar_pathfinding snake
+.PHONY: astar_pathfinding snake brick_breaker
 
 MAINTAINER = "Thibault Santonja"
 
@@ -46,6 +46,15 @@ synthax_astar_pathfinding: venv
 		echo "flake8 ended."; \
 	)
 
+synthax_brick_breaker: venv
+	( \
+		source venv/bin/activate; \
+		pip install flake8; \
+		echo "flake8 analyze :"; \
+		flake8 brick_breaker --count --exit-zero --max-complexity=10 --max-line-length=120 --show-source --statistics; \
+		echo "flake8 ended."; \
+	)
+
 
 
 ## A* script
@@ -67,3 +76,11 @@ snake: venv test synthax_snake
 snake_build:
 	docker build -f snake/Dockerfile . --tag snake:latest
 	docker run snake:latest
+
+
+## Brick Breaker game
+brick_breaker: venv test synthax_brick_breaker
+	( \
+		source venv/bin/activate; \
+		python3.10 main.py brick_breaker; \
+	)
