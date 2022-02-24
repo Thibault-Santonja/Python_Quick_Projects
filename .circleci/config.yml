@@ -2,15 +2,15 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-#orbs: 
-#   codecov: codecov/codecov@3.2.2
+orbs: 
+   codecov: codecov/codecov@3.2.2
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   unittest:
     docker:   
-      - image: python:3.10-slim-bullseye
+      - image: python:3.10
     steps:
       - checkout
       - run:
@@ -27,8 +27,6 @@ jobs:
           command: |
             coverage run -m unittest
             coverage xml
-#      - codecov/upload
-        
         
   Flake8:
     docker:   
@@ -49,7 +47,6 @@ jobs:
           command: |
             flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --show-source --statistics --exclude .git,__pycache__,docs/source/conf.py,old,build,dist,env,venv
           
-        
   Build:
     docker:   
       - image: python:3.10-slim-bullseye
@@ -66,7 +63,9 @@ jobs:
 workflows:
   CI-workflow:
     jobs:
-      - unittest
+      - unittest:
+          post-steps:
+          - codecov/upload
       - Flake8
   CD-workflow:
     jobs:
