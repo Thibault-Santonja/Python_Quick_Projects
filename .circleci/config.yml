@@ -26,8 +26,8 @@ jobs:
           name: Test with unittest
           command: |
             coverage run -m unittest
-      - codecov/upload:
-          file: .coverage
+            coverage xml
+      - codecov/upload
         
         
   Flake8:
