@@ -4,7 +4,13 @@
 import time
 import pygame
 
-from brick_breaker import Pad, Ball, Brick, keyboard, config
+from brick_breaker import keyboard, config
+
+
+def trigger_game_over():
+    print("See you !")
+    time.sleep(1)
+    pygame.quit()
 
 
 class Board:
@@ -14,15 +20,15 @@ class Board:
     _bricks: list = None
     _bricks_columns: int = 8
     _bricks_layers: int = 5
-    _pad: Pad.Pad = None
-    _ball: Ball.Ball = None
+    _pad: pygame.Rect = None
+    _ball: pygame.Rect = None
+    _ball_direction: list = [1, -1]
     _screen: pygame.Surface = None
     _score_font: pygame.font.Font = None
+    _score: int = 0
 
     def __init__(self):
-        pad_size = 80
-        self._pad = Pad.Pad(x=(self._width + pad_size) // 2, y=self._height // 20, size=pad_size)
-        self._ball = Ball.Ball(x=(self._width + pad_size) // 2, y=self._height // 20)
+        pass
 
     def __del__(self):
         pygame.quit()
@@ -51,23 +57,30 @@ class Board:
 
         for layer in range(self._bricks_layers):
             for col in range(self._bricks_columns):
-                brick = Brick.Brick(x=self._width // self._bricks_columns * col + block_gap,
-                                    y=int(self._height / (
-                                            self._bricks_layers * 1/screen_layer_proportion) * layer + block_gap),
-                                    size_x=self._width // self._bricks_columns - block_gap * 2,
-                                    size_y=int(self._height / (
-                                                self._bricks_layers * 1/screen_layer_proportion) - block_gap * 2))
-                brick.draw(pygame, self._screen)
+                x = self._width // self._bricks_columns * col + block_gap
+                y = int(self._height / (self._bricks_layers * 1/screen_layer_proportion) * layer + block_gap)
+                size_x = self._width // self._bricks_columns - block_gap * 2
+                size_y = int(self._height / (self._bricks_layers * 1/screen_layer_proportion) - block_gap * 2)
+
+                brick = pygame.Rect(x, y, size_x, size_y)
+                self._draw(config.COLORS["BRICK"], brick)
                 self._bricks.append(brick)
 
     def _init_pad(self):
         pad_size = self._width // 6
-        self._pad = Pad.Pad(x=(self._width - pad_size)//2, y=self._height-20, size=pad_size)
-        self._pad.draw(pygame, self._screen)
+        x = (self._width - pad_size) // 2
+        y = self._height - 20
+
+        self._pad = pygame.Rect(x, y, pad_size, 10)
+        self._draw(config.COLORS["PAD"], self._pad)
 
     def _init_ball(self):
-        self._ball = Ball.Ball(x=self._width//2, y=self._height-25)
-        self._ball.draw(pygame, self._screen)
+        ball_size = 5
+        x = self._width // 2
+        y = self._height - 25
+
+        self._ball = pygame.Rect(x, y, ball_size, ball_size)
+        self._draw(config.COLORS["BALL"], self._ball)
 
     def _init_game(self):
         # Init screen and draw it
@@ -75,6 +88,77 @@ class Board:
         self._init_bricks()
         self._init_pad()
         self._init_ball()
+
+    def _draw(self, color: tuple, rect: pygame.Rect):
+        pygame.draw.rect(self._screen, color, rect)
+
+    def _update_pad_position(self, delta_x: int):
+        if (delta_x < 0 <= self._pad.x) or (self._pad.x + self._pad.width <= self._width and delta_x > 0):
+            # Erase pad
+            self._draw(config.COLORS["BOARD"], self._pad)
+
+            # Calculate new position
+            self._pad.update(
+                self._pad.x + delta_x * self._width // 50,
+                self._pad.y,
+                self._pad.width,
+                self._pad.height
+            )
+
+            # Redraw it
+            self._draw(config.COLORS["PAD"], self._pad)
+
+    def _check_wall_ball_overlap(self):
+        if 0 >= self._ball.x or self._ball.x >= self._width:
+            self._ball_direction[0] *= -1
+
+        # 0 >= self._y or self._y >= screen_height
+        if 0 >= self._ball.y or self._ball.y >= self._height:
+            self._ball_direction[1] *= -1
+
+    def _check_wall_brick_overlap(self):
+        brick_overlapped = self._ball.collidelist(self._bricks)
+
+        if brick_overlapped >= 0:
+            self._draw(config.COLORS["BOARD"], self._bricks[brick_overlapped])
+            self._bricks.remove(self._bricks[brick_overlapped])
+            self._ball_direction[1] *= -1
+            self._score += 1
+
+    def _check_wall_pad_overlap(self):
+        if self._ball.colliderect(self._pad):
+            self._ball_direction[1] *= -1
+
+    def _update_ball_position(self, delta: int) -> bool:
+        # Erase
+        self._draw(config.COLORS["BOARD"], self._ball)
+
+        # update position
+        self._ball.x += delta * self._ball_direction[0]
+        self._ball.y += delta * self._ball_direction[1]
+
+        # Overlap controls
+        self._check_wall_ball_overlap()
+        self._check_wall_brick_overlap()
+        self._check_wall_pad_overlap()
+
+        # Redraw
+        self._draw(config.COLORS["BALL"], self._ball)
+
+        # Control victory conditions
+        if self._height <= self._ball.y:
+            return False
+        return True
+
+    def _update_board(self, pad_horizontal_movement: int):
+        continue_game = True
+
+        self._update_pad_position(pad_horizontal_movement)
+        if not self._update_ball_position(self._width // 200):
+            continue_game = False
+
+        pygame.display.update()
+        return continue_game
 
     def launch(self):
         self._init_game()
@@ -86,17 +170,16 @@ class Board:
 
             for event in pygame.event.get():
                 res = keyboard.get_keyboard_action(event)
-                print(res)
-                if res:
+                if continue_game and res:
                     _, horizontal_movement = res
                 else:
                     continue_game = False
-            self._pad.update_position(horizontal_movement * self._width // 50, self._width, pygame, self._screen)
-            if not self._ball.update_position(self._width // 200, self._width, self._height, pygame, self._screen):
+
+            if continue_game:
+                continue_game = self._update_board(horizontal_movement)
+
+            if continue_game and not self._bricks:
                 continue_game = False
+                print("GG !")
 
-            pygame.display.update()
-
-        print("See you !")
-        time.sleep(1)
-        pygame.quit()
+        trigger_game_over()
