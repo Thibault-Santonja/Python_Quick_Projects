@@ -175,9 +175,9 @@ class Board:
                 continue_game = self._update_board(horizontal_movement)
 
             if continue_game and not self._bricks:
-                continue_game = False
                 # Todo : Print GG message
-                return trigger_game_over()
+                trigger_game_over()
+                return
 
         # Todo : Print Game Over message
-        return trigger_game_over()
+        trigger_game_over()

@@ -32,7 +32,7 @@ class Grid(object):
         """Returns the grid"""
         return self.__grid
 
-    def __create_grid(self) -> None:
+    def _create_grid(self) -> None:
         """Initialize grid cases"""
         for x in range(self.__nb_rows):
             for y in range(self.__nb_rows):
@@ -77,7 +77,7 @@ class Grid(object):
         """Launch the UI, create the grid and let the user draw and launch the A* path finding"""
 
         # Initialize the grid
-        self.__create_grid()
+        self._create_grid()
 
         # Initialize variables
         start = None  # Store the start point
@@ -269,7 +269,6 @@ class Grid(object):
 
         @param start:
         @param end:
-        @param run:
         @return:
         """
 

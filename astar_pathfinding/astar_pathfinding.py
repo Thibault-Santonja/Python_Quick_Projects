@@ -6,13 +6,10 @@
 # by Thibault Santonja 2021
 #
 import pygame
-from astar_pathfinding import Grid
 
 
-def launch_astar():
-    window_width = 800
-    nb_rows = 50
-
+def launch_astar(window_width: int = 800, nb_rows: int = 50):
+    from astar_pathfinding import Grid
     # Init UI
     pygame.init()
     window = pygame.display.set_mode((window_width, window_width))
@@ -20,3 +17,7 @@ def launch_astar():
     # Init the grid and run it
     grid = Grid.Grid(nb_rows, window, window_width)
     grid.run()
+
+
+if __name__ == "__main__":
+    launch_astar()
