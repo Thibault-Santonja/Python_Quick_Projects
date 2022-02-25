@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import pygame
 
-from astar_pathfinding import Case, Grid, config
+from astar_pathfinding import Case, config
 
 
 class TestCaseClass(TestCase):
