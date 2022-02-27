@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-import pygame
-
 from astar_pathfinding import Case, config
 
 

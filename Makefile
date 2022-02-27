@@ -1,5 +1,5 @@
 #!/bin/bash
-.PHONY: astar_pathfinding snake brick_breaker
+.PHONY: astar_pathfinding snake brick_breaker fibonacci
 
 MAINTAINER = "Thibault Santonja"
 
@@ -56,6 +56,16 @@ synthax_brick_breaker: venv
 	)
 
 
+synthax_fibonacci: venv
+	( \
+		source venv/bin/activate; \
+		pip install flake8; \
+		echo "flake8 analyze :"; \
+		flake8 fibonacci --count --exit-zero --max-complexity=10 --max-line-length=120 --show-source --statistics; \
+		echo "flake8 ended."; \
+	)
+
+
 
 ## A* script
 astar_pathfinding: venv test synthax_astar_pathfinding
@@ -83,4 +93,11 @@ brick_breaker: venv test synthax_brick_breaker
 	( \
 		source venv/bin/activate; \
 		python3.10 main.py brick_breaker; \
+	)
+
+## Fibonacci
+fibonacci: venv test synthax_fibonacci
+	( \
+		source venv/bin/activate; \
+		python3.10 main.py fibonacci; \
 	)
