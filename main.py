@@ -8,12 +8,13 @@ import config
 
 
 def _handle_unknown(argument: str) -> Callable[[], None]:
-    def print_error():
-        print(f"Unknown argument : {argument}")
+    def print_error(**kwargs):
+        # print(f"Unknown argument : {argument}")
+        pass
     return print_error
 
 
 if __name__ == "__main__":
     for arg in sys.argv[1:]:
         project_handler = config.ARGUMENT_MAPPING.get(arg, _handle_unknown(arg))
-        project_handler()
+        project_handler(sys_args=sys.argv[1:])
