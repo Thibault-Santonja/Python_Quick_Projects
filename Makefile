@@ -112,8 +112,11 @@ fibonacci: venv test synthax_fibonacci
 
 # For windows
 fibo-windows:
+	Set-ExecutionPolicy Unrestricted -Scope Process
+
 	python -m pip install --upgrade pip
 	pip install virtualenv
+	python -m venv venv
 	./venv/Scripts/activate
 
 	pip install -r requirements.txt
