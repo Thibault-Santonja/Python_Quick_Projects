@@ -101,3 +101,28 @@ fibonacci: venv test synthax_fibonacci
 		source venv/bin/activate; \
 		python3.10 main.py fibonacci; \
 	)
+
+
+
+
+
+
+
+
+
+# For windows
+fibo-windows:
+	python -m pip install --upgrade pip
+	pip install virtualenv
+	./venv/Scripts/activate
+
+	pip install -r requirements.txt
+
+	pip install coverage
+	python -m coverage run -m unittest
+	coverage report -m
+
+	pip install flake8
+	flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --show-source --statistics --exclude venv
+
+	python main.py fibonacci n=10
