@@ -26,4 +26,3 @@ class Test(TestCase):
         self.assertEqual(keyboard.get_keyboard_action(event), None)
         event = pygame.event.Event(pygame.KEYDOWN, {"key": pygame.K_4})
         self.assertEqual(keyboard.get_keyboard_action(event), (0, 0))
-
