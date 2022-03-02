@@ -15,17 +15,16 @@ def calculate_intersections(input_links: List[Tuple[int, int]]) -> int:
 
     # Algorithm
     res = 0
-    diff = [link[0] - link[1] for link in links]
-    print(diff)
-    """
     for idx, link in enumerate(links):
-        if link[0] == link[1]:
+        """if link[0] == link[1]:
             continue
         if link[0] > link[1]:
             res += count_bigger(links[:idx], link[1])
         else:
-            res += count_lower(links[idx+1:], link)
-    """
+            res += count_lower(links[idx+1:], link)"""
+        for link_ in links[idx:]:
+            if link_[0] > link[0] and link_[1] < link[1] or link_[0] < link[0] and link_[1] > link[1]:
+                res += 1
 
     return res
 
@@ -54,7 +53,7 @@ def count_bigger(wires: List[Tuple[int, int]], value: int) -> int:
     """
     counter = 0
     for wire in wires:
-        if wire[1] > value and wire[0] == wire[1]:
+        if wire[1] > value:
             counter += 1
     return counter
 
