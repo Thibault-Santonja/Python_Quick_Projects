@@ -30,16 +30,17 @@ def calculate_intersections(input_links: List[Tuple[int, int]]) -> int:
     return len(intersections)
 
 
+def det(a, b):
+    return a[0] * b[1] - a[1] * b[0]
+
+
 def find_line_intersection_point(p1, p2, p3, p4):
     xdiff = (p1[0] - p2[0], p3[0] - p4[0])
     ydiff = (p1[1] - p2[1], p3[1] - p4[1])
 
-    def det(a, b):
-        return a[0] * b[1] - a[1] * b[0]
-
     div = det(xdiff, ydiff)
     if div == 0:
-        raise Exception('lines do not intersect')
+        raise ValueError('lines do not intersect')
 
     d = (det(p1, p2), det(p3, p4))
     x = det(d, xdiff) / div
@@ -50,13 +51,10 @@ def find_line_intersection_point(p1, p2, p3, p4):
 
 if __name__ == "__main__":
     test = [(1, 10), (3, 3), (2, 2), (6, 4), (5, 5), (8, 8), (7, 9)]
-    print(test[:2])
-    print(test[2:])
 
     print(calculate_intersections([(1, 10)]))
     print(calculate_intersections([(1, 10), (3, 3), (2, 2)]))
     print(calculate_intersections([(10, 1), (3, 3), (2, 2)]))
     print(calculate_intersections([(10, 1), (3, 3), (2, 2), (1, 10)]))
 
-    print()
-    print(calculate_intersections([(1, 3), (2, 2), (3, 1)]))
+    print(test, calculate_intersections(test))
