@@ -47,14 +47,3 @@ def find_line_intersection_point(p1, p2, p3, p4):
     y = det(d, ydiff) / div
 
     return x, y
-
-
-if __name__ == "__main__":
-    test = [(1, 10), (3, 3), (2, 2), (6, 4), (5, 5), (8, 8), (7, 9)]
-
-    print(calculate_intersections([(1, 10)]))
-    print(calculate_intersections([(1, 10), (3, 3), (2, 2)]))
-    print(calculate_intersections([(10, 1), (3, 3), (2, 2)]))
-    print(calculate_intersections([(10, 1), (3, 3), (2, 2), (1, 10)]))
-
-    print(test, calculate_intersections(test))
