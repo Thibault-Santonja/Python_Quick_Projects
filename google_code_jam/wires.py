@@ -14,53 +14,39 @@ def calculate_intersections(input_links: List[Tuple[int, int]]) -> int:
     links.sort()
 
     # Algorithm
-    res = 0
+    intersections = []
     for idx, link in enumerate(links):
-        """if link[0] == link[1]:
-            continue
-        if link[0] > link[1]:
-            res += count_bigger(links[:idx], link[1])
-        else:
-            res += count_lower(links[idx+1:], link)"""
         for link_ in links[idx:]:
             if link_[0] > link[0] and link_[1] < link[1] or link_[0] < link[0] and link_[1] > link[1]:
-                res += 1
+                intersect = find_line_intersection_point(
+                    (0, link[0]),
+                    (1, link[1]),
+                    (0, link_[0]),
+                    (1, link_[1])
+                )
+                if intersect not in intersections:
+                    intersections.append(intersect)
 
-    return res
-
-
-def count_lower(wires: List[Tuple[int, int]], value: tuple) -> int:
-    """
-
-    @param wires:
-    @param value:
-    @return:
-    """
-    counter = 0
-    for wire in wires:
-        if wire[1] < value[1]:
-            counter += 1
-    return counter
-    pass
+    return len(intersections)
 
 
-def count_bigger(wires: List[Tuple[int, int]], value: int) -> int:
-    """
+def find_line_intersection_point(p1, p2, p3, p4):
+    xdiff = (p1[0] - p2[0], p3[0] - p4[0])
+    ydiff = (p1[1] - p2[1], p3[1] - p4[1])
 
-    @param wires:
-    @param value:
-    @return:
-    """
-    counter = 0
-    for wire in wires:
-        if wire[1] > value:
-            counter += 1
-    return counter
+    def det(a, b):
+        return a[0] * b[1] - a[1] * b[0]
 
-"""
-Si tous les liens sont //, on a 0 intersection -> il faut des "outliners"
-si 
-"""
+    div = det(xdiff, ydiff)
+    if div == 0:
+        raise Exception('lines do not intersect')
+
+    d = (det(p1, p2), det(p3, p4))
+    x = det(d, xdiff) / div
+    y = det(d, ydiff) / div
+
+    return x, y
+
 
 if __name__ == "__main__":
     test = [(1, 10), (3, 3), (2, 2), (6, 4), (5, 5), (8, 8), (7, 9)]
@@ -71,3 +57,6 @@ if __name__ == "__main__":
     print(calculate_intersections([(1, 10), (3, 3), (2, 2)]))
     print(calculate_intersections([(10, 1), (3, 3), (2, 2)]))
     print(calculate_intersections([(10, 1), (3, 3), (2, 2), (1, 10)]))
+
+    print()
+    print(calculate_intersections([(1, 3), (2, 2), (3, 1)]))
